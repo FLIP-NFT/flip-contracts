@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 import "./Flip.sol";
 
-contract FlipBulkOperations is ERC721Holder {
+contract FlipPeriphery is ERC721Holder {
     Flip public immutable flipContract;
 
     event BulkBuyExecuted(address indexed buyer, uint256[] tokenIds, uint256 totalPrice);
@@ -90,6 +90,5 @@ contract FlipBulkOperations is ERC721Holder {
         }
     }
 
-    // Allow contract to receive ETH
     receive() external payable {}
 }
