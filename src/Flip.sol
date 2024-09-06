@@ -10,12 +10,15 @@ import "@openzeppelin/contracts/utils/math/SignedMath.sol";
 contract Flip is ERC721, ERC721Holder, Ownable {
     using Math for uint256;
 
-    event TokenMinted(address indexed to, uint256 indexed tokenId, uint256 price);
-    event TokenBought(address indexed buyer, uint256 indexed tokenId, uint256 price);
-    event TokenSold(address indexed seller, uint256 indexed tokenId, uint256 price);
+    event TokenMinted(address indexed to, uint256 indexed tokenId, uint256 price, uint256 creatorFee);
+    event TokenBought(address indexed buyer, uint256 indexed tokenId, uint256 price, uint256 creatorFee);
+    event TokenSold(address indexed seller, uint256 indexed tokenId, uint256 price, uint256 creatorFee);
     event QuickBuyExecuted(address indexed buyer, uint256 indexed tokenId, uint256 price);
 
     uint256 public constant MAX_SUPPLY = 10000;
+    uint256 public constant CREATOR_FEE_PERCENT = 0.05 ether; // 5%
+    address public creator;
+
     uint256 public totalSupply;
     uint256 public currentSupply;
     uint256 public initialPrice; 
@@ -25,6 +28,7 @@ contract Flip is ERC721, ERC721Holder, Ownable {
     constructor(
         uint256 _initialPrice
     ) ERC721("FlipNFT", "FLIP") Ownable(msg.sender) {
+        creator = msg.sender;
         initialPrice = _initialPrice;
         totalSupply = 0;
     }
@@ -43,16 +47,20 @@ contract Flip is ERC721, ERC721Holder, Ownable {
         require(totalSupply <= MAX_SUPPLY, "Max supply reached");
         
         uint256 price = getBuyPrice();
-        require(msg.value >= price, "Insufficient payment");
+        uint256 creatorFee = price * CREATOR_FEE_PERCENT / 1 ether;
+        require(msg.value >= price + creatorFee, "Insufficient payment");
 
         uint256 tokenId = ++totalSupply;
         
         _safeMint(msg.sender, tokenId);
         ++currentSupply;
 
-        emit TokenMinted(msg.sender, tokenId, price);
+        emit TokenMinted(msg.sender, tokenId, price, creatorFee);
 
-        _refundExcess(price);
+        (bool success, ) = creator.call{value: creatorFee}("");
+        require(success, "Transfer failed");
+
+        _refundExcess(price + creatorFee);
     }
 
     function quickBuy() public payable {
@@ -66,29 +74,49 @@ contract Flip is ERC721, ERC721Holder, Ownable {
 
     function buy(uint256 tokenId) public payable onlyTokenOnSale(tokenId) {
         uint256 price = getBuyPrice(); 
-        require(msg.value >= price, "Insufficient payment");
+        uint256 creatorFee = price * CREATOR_FEE_PERCENT / 1 ether;
+        require(msg.value >= price + creatorFee, "Insufficient payment");
 
         _transfer(address(this), msg.sender, tokenId);
 
         removeAvailableToken(tokenId);
         ++currentSupply;
 
-        emit TokenBought(msg.sender, tokenId, price);
+        emit TokenBought(msg.sender, tokenId, price, creatorFee);
 
-        _refundExcess(price);
+        (bool success, ) = creator.call{value: creatorFee}("");
+        require(success, "Transfer failed");
+
+        _refundExcess(price + creatorFee);
     }
 
     function sell(uint256 tokenId) public onlyTokenOwner(tokenId) {
         uint256 price = getSellPrice();
+        uint256 creatorFee = price * CREATOR_FEE_PERCENT / 1 ether;
 
         _transfer(_msgSender(), address(this), tokenId);
         addAvailableToken(tokenId);
         --currentSupply;
 
-        emit TokenSold(_msgSender(), tokenId, price);
+        emit TokenSold(_msgSender(), tokenId, price, creatorFee);
 
-        (bool success, ) = _msgSender().call{value: price}("");
-        require(success, "Transfer failed");
+        (bool sentToSeller, ) = _msgSender().call{value: price - creatorFee}("");
+        require(sentToSeller, "Transfer to seller failed");
+
+        (bool sentToCreator, ) = creator.call{value: creatorFee}("");
+        require(sentToCreator, "Transfer to creator failed");
+    }
+
+    function getBuyPriceAfterFee() public view returns (uint256) {
+        uint256 price = getBuyPrice();
+        uint256 fee = price * CREATOR_FEE_PERCENT / 1 ether;
+        return price + fee;
+    }
+
+    function getSellPriceAfterFee() public view returns (uint256) {
+        uint256 price = getSellPrice();
+        uint256 fee = price * CREATOR_FEE_PERCENT / 1 ether;
+        return price - fee;
     }
 
     function getBuyPrice() public view returns (uint256) {
@@ -96,15 +124,14 @@ contract Flip is ERC721, ERC721Holder, Ownable {
     }
 
     function getSellPrice() public view returns (uint256) {
-        return calculatePrice(currentSupply - 1);
+        return calculatePrice(currentSupply > 0 ? currentSupply - 1 : 0);
     }
 
     function calculatePrice(uint256 supply) public view returns (uint256) {
-        return _curve(supply + 1 * 2) - _curve(supply);
-    }
+        if (supply == 0) return initialPrice;
 
-    function _curve(uint256 x) internal view returns (uint256) {
-        return x < initialPrice ? initialPrice : (x - initialPrice) * (x - initialPrice);
+        uint256 price = initialPrice + initialPrice * 2 * Math.sqrt(100 * supply / MAX_SUPPLY) * Math.sqrt(10000 * supply * supply / MAX_SUPPLY / MAX_SUPPLY);
+        return price;
     }
 
     function removeAvailableToken(uint256 tokenId) internal {
@@ -116,7 +143,7 @@ contract Flip is ERC721, ERC721Holder, Ownable {
         tokenIndex[lastToken] = index;
 
         availableTokens.pop();
-        delete tokenIndex[tokenId];
+        // delete tokenIndex[tokenId];
     }
 
     function addAvailableToken(uint256 tokenId) internal {
@@ -131,4 +158,6 @@ contract Flip is ERC721, ERC721Holder, Ownable {
             require(success, "Refund failed");
         }
     }
+
+    receive() external payable {}
 }
