@@ -10,11 +10,15 @@ import "@openzeppelin/contracts/utils/math/SignedMath.sol";
 contract Flip is ERC721, ERC721Holder, Ownable {
     using Math for uint256;
 
+    event TokenMinted(address indexed to, uint256 indexed tokenId, uint256 price);
+    event TokenBought(address indexed buyer, uint256 indexed tokenId, uint256 price);
+    event TokenSold(address indexed seller, uint256 indexed tokenId, uint256 price);
+    event QuickBuyExecuted(address indexed buyer, uint256 indexed tokenId, uint256 price);
+
     uint256 public constant MAX_SUPPLY = 10000;
     uint256 public totalSupply;
+    uint256 public currentSupply;
     uint256 public initialPrice; 
-    uint256 public accumulatedBuyCount;
-    uint256 public accumulatedSellCount;
     uint256[] public availableTokens;
     mapping(uint256 => uint256) public tokenIndex;
 
@@ -25,88 +29,82 @@ contract Flip is ERC721, ERC721Holder, Ownable {
         totalSupply = 0;
     }
 
-    function mint() public payable {
-        require(msg.value >= initialPrice, "Insufficient payment");
-        require(totalSupply < MAX_SUPPLY, "Max supply reached");
-
-        uint256 tokenId = totalSupply + 1;
-        _safeMint(msg.sender, tokenId);
-        totalSupply = totalSupply + 1;
+    modifier onlyTokenOwner(uint256 tokenId) {
+        require(ownerOf(tokenId) == _msgSender(), "Caller is not owner");
+        _;
     }
 
-    function getMintPrice() public view returns (uint256) {
-        return initialPrice + initialPrice / totalSupply ;
-    }
-
-    function buy(uint256 tokenId) public payable {
+    modifier onlyTokenOnSale(uint256 tokenId) {
         require(ownerOf(tokenId) == address(this), "Token is not available for sale");
-        uint256 price = getBuyPrice(); 
+        _;
+    }
+
+    function mint() public payable {
+        require(totalSupply <= MAX_SUPPLY, "Max supply reached");
+        
+        uint256 price = getBuyPrice();
         require(msg.value >= price, "Insufficient payment");
 
-        _transfer(address(this), msg.sender, tokenId);
+        uint256 tokenId = ++totalSupply;
+        
+        _safeMint(msg.sender, tokenId);
+        ++currentSupply;
 
-        // Remove token from availableTokens
-        removeAvailableToken(tokenId);
+        emit TokenMinted(msg.sender, tokenId, price);
 
-        accumulatedBuyCount = accumulatedBuyCount + 1;  
+        _refundExcess(price);
     }
 
     function quickBuy() public payable {
         require(availableTokens.length > 0, "No tokens available for quick buy");
+        uint256 tokenId = availableTokens[availableTokens.length - 1];
+        
+        buy(tokenId);
+        
+        emit QuickBuyExecuted(msg.sender, tokenId, getBuyPrice());
+    }
+
+    function buy(uint256 tokenId) public payable onlyTokenOnSale(tokenId) {
         uint256 price = getBuyPrice(); 
         require(msg.value >= price, "Insufficient payment");
 
-        uint256 tokenId = availableTokens[availableTokens.length - 1];
         _transfer(address(this), msg.sender, tokenId);
 
-        // Remove token from availableTokens
         removeAvailableToken(tokenId);
+        ++currentSupply;
 
-        accumulatedBuyCount = accumulatedBuyCount + 1;
+        emit TokenBought(msg.sender, tokenId, price);
+
+        _refundExcess(price);
     }
 
-    function sell(uint256 tokenId) public {
-        require(ownerOf(tokenId) == _msgSender(), "Caller is not owner");
+    function sell(uint256 tokenId) public onlyTokenOwner(tokenId) {
         uint256 price = getSellPrice();
 
         _transfer(_msgSender(), address(this), tokenId);
+        addAvailableToken(tokenId);
+        --currentSupply;
+
+        emit TokenSold(_msgSender(), tokenId, price);
+
         (bool success, ) = _msgSender().call{value: price}("");
         require(success, "Transfer failed");
-
-        // Add token to availableTokens
-        availableTokens.push(tokenId);
-
-        accumulatedSellCount = accumulatedSellCount + 1;
-    }
-      
-    function calculatePrice(uint256 buyCount, uint256 sellCount, bool isBuy) public view returns (uint256) {
-        if (totalSupply < MAX_SUPPLY) {
-            return initialPrice;
-        }
-
-        uint256 order = sellCount - buyCount;    
-        uint256 cnt = sellCount + buyCount; 
-
-        uint256 price;
-        if (isBuy) {
-            price = initialPrice * Math.sqrt(Math.sqrt(2 * (cnt + 1))) / Math.sqrt(Math.sqrt(order + 1));
-        } else {
-            price = initialPrice * Math.sqrt(Math.sqrt(cnt + 1)) / Math.sqrt(Math.sqrt(order + 1));
-        }
-
-        return price;
-    }
-
-    function curve(uint256 x) public pure returns (uint256) {
-        return x * x;
     }
 
     function getBuyPrice() public view returns (uint256) {
-        return calculatePrice(accumulatedBuyCount, accumulatedSellCount, true);
+        return calculatePrice(currentSupply);
     }
 
     function getSellPrice() public view returns (uint256) {
-        return calculatePrice(accumulatedBuyCount, accumulatedSellCount, false);
+        return calculatePrice(currentSupply - 1);
+    }
+
+    function calculatePrice(uint256 supply) public view returns (uint256) {
+        return _curve(supply + 1 * 2) - _curve(supply);
+    }
+
+    function _curve(uint256 x) internal view returns (uint256) {
+        return x < initialPrice ? initialPrice : (x - initialPrice) * (x - initialPrice);
     }
 
     function removeAvailableToken(uint256 tokenId) internal {
@@ -118,5 +116,19 @@ contract Flip is ERC721, ERC721Holder, Ownable {
         tokenIndex[lastToken] = index;
 
         availableTokens.pop();
+        delete tokenIndex[tokenId];
+    }
+
+    function addAvailableToken(uint256 tokenId) internal {
+        availableTokens.push(tokenId);
+        tokenIndex[tokenId] = availableTokens.length - 1;
+    }
+
+    function _refundExcess(uint256 price) internal {
+        uint256 refundAmount = msg.value - price;
+        if (refundAmount > 0) {
+            (bool success, ) = _msgSender().call{value: refundAmount}("");
+            require(success, "Refund failed");
+        }
     }
 }
