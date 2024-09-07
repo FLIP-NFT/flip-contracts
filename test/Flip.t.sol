@@ -15,7 +15,7 @@ contract FlipTest is Test {
 
     function setUp() public {
         vm.prank(alice);
-        flip = new Flip(0.001 ether);
+        flip = new Flip();
     }
 
     function test_mint() public {
@@ -53,7 +53,7 @@ contract FlipTest is Test {
         assertEq(totalPriceAfterFee, totalPrice + totalCreatorFee);
     }
 
-    function test_mint_and_sell() public {
+    function test_sell() public {
         test_mint();
         
         uint256 bobBalanceBeforeSell = bob.balance;
@@ -81,6 +81,9 @@ contract FlipTest is Test {
         uint256 diffCreatorBalance = creatorBalanceAfterSell - creatorBalanceBeforeSell;
         
         assertEq(diffContractBalance, diffBobBalance + diffCreatorBalance);
+
+        uint256[] memory tokens = flip.getAvailableTokens();
+        assertEq(tokens.length, 10000);
     }
 
     function test_deal() public {
@@ -252,7 +255,7 @@ contract FlipTest is Test {
         */
     }
 
-    function testPriceCurve() public {
+    function testPriceCurve() public view {
         console.log("Price at 0     supply:", flip.calculatePrice(0));
         console.log("Price at 500   supply:", flip.calculatePrice(500));
         console.log("Price at 1000  supply:", flip.calculatePrice(1000));
@@ -260,5 +263,11 @@ contract FlipTest is Test {
         console.log("Price at 5000  supply:", flip.calculatePrice(5000));
         console.log("Price at 7500  supply:", flip.calculatePrice(7500));
         console.log("Price at 10000 supply:", flip.calculatePrice(10000));
+    }
+
+    function testPriceBySupply() public view {
+        for (uint256 i = 1; i <= 1000; i+=10) {
+            console.log("Price at ", i, " supply:", flip.calculatePrice(i));
+        }
     }
 }

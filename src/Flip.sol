@@ -16,20 +16,17 @@ contract Flip is ERC721, ERC721Holder, Ownable {
     event QuickBuyExecuted(address indexed buyer, uint256 indexed tokenId, uint256 price);
 
     uint256 public constant MAX_SUPPLY = 10000;
+    uint256 public constant INITIAL_PRICE = 0.001 ether; 
     uint256 public constant CREATOR_FEE_PERCENT = 0.05 ether; // 5%
     address public creator;
 
     uint256 public totalSupply;
     uint256 public currentSupply;
-    uint256 public initialPrice; 
     uint256[] public availableTokens;
     mapping(uint256 => uint256) public tokenIndex;
 
-    constructor(
-        uint256 _initialPrice
-    ) ERC721("FlipNFT", "FLIP") Ownable(msg.sender) {
+    constructor() ERC721("FlipNFT", "FLIP") Ownable(msg.sender) {
         creator = msg.sender;
-        initialPrice = _initialPrice;
         totalSupply = 0;
     }
 
@@ -107,6 +104,14 @@ contract Flip is ERC721, ERC721Holder, Ownable {
         require(sentToCreator, "Transfer to creator failed");
     }
 
+    function getAvailableTokens() public view returns (uint256[] memory) {
+        return availableTokens;
+    }
+
+    function isOnSale(uint256 tokenId) public view returns (bool) {
+        return ownerOf(tokenId) == address(this);
+    }
+
     function getBuyPriceAfterFee() public view returns (uint256) {
         uint256 price = getBuyPrice();
         uint256 fee = price * CREATOR_FEE_PERCENT / 1 ether;
@@ -127,10 +132,10 @@ contract Flip is ERC721, ERC721Holder, Ownable {
         return calculatePrice(currentSupply > 0 ? currentSupply - 1 : 0);
     }
 
-    function calculatePrice(uint256 supply) public view returns (uint256) {
-        if (supply == 0) return initialPrice;
+    function calculatePrice(uint256 supply) public pure returns (uint256) {
+        if (supply == 0) return INITIAL_PRICE;
 
-        uint256 price = initialPrice + initialPrice * 2 * Math.sqrt(100 * supply / MAX_SUPPLY) * Math.sqrt(10000 * supply * supply / MAX_SUPPLY / MAX_SUPPLY);
+        uint256 price = INITIAL_PRICE + INITIAL_PRICE * 2 * Math.sqrt(100 * supply / MAX_SUPPLY) * Math.sqrt(10000 * supply * supply / MAX_SUPPLY / MAX_SUPPLY);
         return price;
     }
 
