@@ -270,4 +270,8 @@ contract FlipTest is Test {
             console.log("Price at ", i, " supply:", flip.calculatePrice(i));
         }
     }
+
+    function test_tokenURI() public view {
+        console.log(flip.tokenURI(1110));
+    }
 }
