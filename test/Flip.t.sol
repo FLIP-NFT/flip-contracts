@@ -272,6 +272,6 @@ contract FlipTest is Test {
     }
 
     function test_tokenURI() public view {
-        console.log(flip.tokenURI(1110));
+        console.log(flip.tokenURI(3));
     }
 }
