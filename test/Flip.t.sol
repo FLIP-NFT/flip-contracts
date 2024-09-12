@@ -18,6 +18,18 @@ contract FlipTest is Test {
         flip = new Flip();
     }
 
+    function test_setCreator() public {
+        vm.prank(alice);
+        flip.setCreator(bob);
+        assertEq(flip.creator(), bob);
+    }
+
+    function test_RevertWhen_SetCreatorNotOwner() public {
+        vm.prank(bob);
+        vm.expectRevert();
+        flip.setCreator(bob);
+    }
+
     function test_mint() public {
         vm.deal(bob, 10000 ether);
         uint256 totalPrice = 0;
@@ -82,8 +94,50 @@ contract FlipTest is Test {
         
         assertEq(diffContractBalance, diffBobBalance + diffCreatorBalance);
 
-        uint256[] memory tokens = flip.getAvailableTokens();
-        assertEq(tokens.length, 10000);
+        uint256 tokensCount = flip.getAvailableTokensCount();
+        console.log("available tokens count", tokensCount);
+        assertEq(tokensCount, 10000);
+    }
+
+    function test_RevertWhen_SellWithTokenNotOwned() public {
+        test_mint();
+        vm.prank(bob);
+        flip.sell(1);
+
+        vm.prank(carol);
+        uint256 price = flip.getBuyPriceAfterFee();
+        flip.buy{value: price}(1);
+
+        vm.prank(bob);
+        vm.expectRevert("Caller is not owner");
+        flip.sell(1);
+    }
+
+    function test_buy() public {
+        test_sell();
+
+        console.log("================================================");
+        uint256 availableTokensCountBeforeBuy    = flip.getAvailableTokensCount();
+        console.log("available tokens count before buy", availableTokensCountBeforeBuy);
+        
+        vm.deal(carol, 1 ether);
+        vm.prank(carol);
+        uint256 price = flip.getBuyPriceAfterFee();
+        flip.buy{value: price}(1);
+
+        uint256 availableTokensCountAfterBuy = flip.getAvailableTokensCount();
+        console.log("available tokens count after buy", availableTokensCountAfterBuy);
+        assertEq(availableTokensCountAfterBuy, availableTokensCountBeforeBuy - 1);
+    }
+
+    function test_RevertWhen_BuyWithTokenNotAvailable() public {
+        test_mint();
+
+        vm.deal(carol, 10 ether);
+        vm.prank(carol);
+        uint256 price = flip.getBuyPriceAfterFee();
+        vm.expectRevert("Token is not available for sale");
+        flip.buy{value: price}(1);
     }
 
     function test_deal() public {
@@ -266,7 +320,7 @@ contract FlipTest is Test {
     }
 
     function testPriceBySupply() public view {
-        for (uint256 i = 1; i <= 1000; i+=10) {
+        for (uint256 i = 1; i <= 10000; i+=100) {
             console.log("Price at ", i, " supply:", flip.calculatePrice(i));
         }
     }

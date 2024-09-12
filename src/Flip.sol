@@ -44,7 +44,7 @@ contract Flip is ERC721, ERC721Holder, Ownable, Trait {
     }
 
     function mint() public payable {
-        require(totalSupply <= MAX_SUPPLY, "Max supply reached");
+        require(totalSupply < MAX_SUPPLY, "Max supply reached");
         
         uint256 price = getBuyPrice();
         uint256 creatorFee = price * CREATOR_FEE_PERCENT / 1 ether;
@@ -106,6 +106,10 @@ contract Flip is ERC721, ERC721Holder, Ownable, Trait {
 
         (bool sentToCreator, ) = creator.call{value: creatorFee}("");
         require(sentToCreator, "Transfer to creator failed");
+    }
+
+    function setCreator(address newCreator) public onlyOwner {
+        creator = newCreator;
     }
 
     function getAvailableTokens() public view returns (uint256[] memory) {
