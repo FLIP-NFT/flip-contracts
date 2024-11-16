@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 import "@openzeppelin/contracts/utils/math/Math.sol";
@@ -9,7 +10,7 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "./Trait.sol";
 
-contract Flip is ERC721, ERC721Holder, Ownable, Trait {
+contract Flip is ERC721, ERC721Enumerable, ERC721Holder, Ownable, Trait {
     using Math for uint256;
     using Strings for uint256;
 
@@ -23,14 +24,14 @@ contract Flip is ERC721, ERC721Holder, Ownable, Trait {
     uint256 public constant CREATOR_FEE_PERCENT = 0.05 ether; // 5%
     address public creator;
 
-    uint256 public totalSupply;
+    // uint256 public totalSupply;
     uint256 public currentSupply;
     uint256[] public availableTokens;
     mapping(uint256 => uint256) public tokenIndex;
 
     constructor() ERC721("FlipNFT", "FLIP") Ownable(msg.sender) {
         creator = msg.sender;
-        totalSupply = 0;
+        // totalSupply = 0;
     }
 
     modifier onlyTokenOwner(uint256 tokenId) {
@@ -44,13 +45,13 @@ contract Flip is ERC721, ERC721Holder, Ownable, Trait {
     }
 
     function mint() public payable {
-        require(totalSupply < MAX_SUPPLY, "Max supply reached");
+        require(totalSupply() < MAX_SUPPLY, "Max supply reached");
         
         uint256 price = getBuyPrice();
         uint256 creatorFee = price * CREATOR_FEE_PERCENT / 1 ether;
         require(msg.value >= price + creatorFee, "Insufficient payment");
 
-        uint256 tokenId = ++totalSupply;
+        uint256 tokenId = totalSupply() + 1;
         
         _safeMint(msg.sender, tokenId);
         ++currentSupply;
@@ -199,6 +200,22 @@ contract Flip is ERC721, ERC721Holder, Ownable, Trait {
             (bool success, ) = _msgSender().call{value: refundAmount}("");
             require(success, "Refund failed");
         }
+    }
+
+    function supportsInterface(bytes4 interfaceId) public view override(ERC721, ERC721Enumerable) returns (bool) {
+      return super.supportsInterface(interfaceId);
+    }
+    
+    function _update(
+      address to,
+      uint256 tokenId,
+      address auth
+    ) internal override(ERC721, ERC721Enumerable) returns (address) {
+      return super._update(to, tokenId, auth);
+    }
+
+    function _increaseBalance(address account, uint128 value) internal override(ERC721, ERC721Enumerable) {
+      super._increaseBalance(account, value);
     }
 
     receive() external payable {}
