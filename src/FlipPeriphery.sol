@@ -12,9 +12,19 @@ contract FlipPeriphery is ERC721Holder {
     event BulkSellExecuted(address indexed seller, uint256[] tokenIds, uint256 totalPrice);
     event BulkMintExecuted(address indexed buyer, uint256 quantity, uint256 totalPrice);
     event BulkQuickBuyExecuted(address indexed buyer, uint256 quantity, uint256 totalPrice);
+    event QuickBuyExecuted(address indexed buyer, uint256 indexed tokenId, uint256 price);
 
     constructor(address _flipContractAddress) {
         flipContract = Flip(payable(_flipContractAddress));
+    }
+
+    function quickBuy() public payable {
+        require(flipContract.getAvailableTokensCount() > 0, "No tokens available for quick buy");
+        uint256 tokenId = flipContract.getAvailableTokenByIndex(flipContract.getAvailableTokensCount() - 1);
+        
+        flipContract.buy{value: flipContract.getBuyPrice()}(tokenId);
+        
+        emit QuickBuyExecuted(msg.sender, tokenId, flipContract.getBuyPrice());
     }
 
     function bulkBuy(uint256[] calldata tokenIds) external payable {
@@ -38,10 +48,13 @@ contract FlipPeriphery is ERC721Holder {
 
     function bulkQuickBuy(uint256 quantity) external payable {
         uint256 totalPrice = 0;
+        uint256 availableTokensCount = flipContract.getAvailableTokensCount();
+        require(availableTokensCount > quantity, "Not enough tokens available for quick buy");
         for (uint256 i = 0; i < quantity; i++) {
+            uint256 tokenId = flipContract.getAvailableTokenByIndex(availableTokensCount - 1);
             uint256 price = flipContract.getBuyPrice();
             totalPrice += price;
-            flipContract.quickBuy{value: price}();
+            flipContract.buy{value: price}(tokenId);
         }
         require(msg.value >= totalPrice, "Insufficient payment");
         
