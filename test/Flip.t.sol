@@ -15,7 +15,13 @@ contract FlipTest is Test {
 
     function setUp() public {
         vm.prank(alice);
-        flip = new Flip();
+        flip = new Flip(
+            "Flip",
+            "FLIP",
+            0.001 ether,
+            10000,
+            0.05 ether
+        );
     }
 
     function test_setCreator() public {
@@ -43,7 +49,7 @@ contract FlipTest is Test {
             flip.mint{value: priceAfterFee}();
             totalPrice += price;
             totalPriceAfterFee += priceAfterFee;
-            totalCreatorFee += price * flip.CREATOR_FEE_PERCENT() / 1 ether;
+            totalCreatorFee += price * flip.creatorFeePercent() / 1 ether;
             if (i % 1000 == 0 || i == 1 || i == 10000) {
                 console.log("index:         ", i + 1);
                 console.log("price:         ", price);
@@ -177,14 +183,14 @@ contract FlipTest is Test {
             
             totalSellPriceAfterFee += sellPriceAfterFee;
             totalSellPrice += sellPrice;
-            totalCreatorSellFee += sellPrice * flip.CREATOR_FEE_PERCENT() / 1 ether;
+            totalCreatorSellFee += sellPrice * flip.creatorFeePercent() / 1 ether;
             
             if (i % 500 == 0 || i == 1 || i == 2000) {
                 console.log("Token ID:            ", i);
-                console.log("Creator Fee:         ", sellPrice * flip.CREATOR_FEE_PERCENT() / 1 ether);
+                console.log("Creator Fee:         ", sellPrice * flip.creatorFeePercent() / 1 ether);
                 console.log("Sell Price:          ", sellPrice);
                 console.log("Sell Price After Fee:", sellPriceAfterFee);
-                assertEq(sellPrice, sellPriceAfterFee + sellPrice * flip.CREATOR_FEE_PERCENT() / 1 ether);
+                assertEq(sellPrice, sellPriceAfterFee + sellPrice * flip.creatorFeePercent() / 1 ether);
                 console.log("----------------------------------------");
             }
         }
@@ -226,14 +232,14 @@ contract FlipTest is Test {
 
             totalBuyPriceAfterFee += buyPriceAfterFee;
             totalBuyPrice += buyPrice;
-            totalCreatorBuyFee += buyPrice * flip.CREATOR_FEE_PERCENT() / 1 ether;
+            totalCreatorBuyFee += buyPrice * flip.creatorFeePercent() / 1 ether;
             
             if (i % 500 == 0 || i == 1 || i == 2000) {
                 console.log("index:            ", i);
                 console.log("buyPrice:         ", buyPrice);
-                console.log("creatorFee:       ", buyPrice * flip.CREATOR_FEE_PERCENT() / 1 ether);
+                console.log("creatorFee:       ", buyPrice * flip.creatorFeePercent() / 1 ether);
                 console.log("buyPriceAfterFee: ", buyPriceAfterFee);
-                assertEq(buyPrice, buyPriceAfterFee - buyPrice * flip.CREATOR_FEE_PERCENT() / 1 ether);
+                assertEq(buyPrice, buyPriceAfterFee - buyPrice * flip.creatorFeePercent() / 1 ether);
                 console.log("----------------------------------------");
 
             }
@@ -276,14 +282,14 @@ contract FlipTest is Test {
             
             totalSellPriceAfterFee += sellPriceAfterFee;
             totalSellPrice += sellPrice;
-            totalCreatorSellFee += sellPrice * flip.CREATOR_FEE_PERCENT() / 1 ether;
+            totalCreatorSellFee += sellPrice * flip.creatorFeePercent() / 1 ether;
             
             if (i % 100 == 0 || i == 1 || i == 1000) {
                 console.log("index:             ", i);
                 console.log("sellPriceAfterFee: ", sellPriceAfterFee);
-                console.log("creatorFee:        ", sellPrice * flip.CREATOR_FEE_PERCENT() / 1 ether);
+                console.log("creatorFee:        ", sellPrice * flip.creatorFeePercent() / 1 ether);
                 console.log("sellPrice:         ", sellPrice);
-                assertEq(sellPrice, sellPriceAfterFee + sellPrice * flip.CREATOR_FEE_PERCENT() / 1 ether);
+                assertEq(sellPrice, sellPriceAfterFee + sellPrice * flip.creatorFeePercent() / 1 ether);
                 console.log("----------------------------------------");
             }
         }
