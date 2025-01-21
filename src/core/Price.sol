@@ -4,7 +4,13 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/utils/math/Math.sol";
 import "./BaseNFT.sol";
 
-contract Price is BaseNFT {
+/**
+ * @title Price Contract
+ * @author @lukema95
+ * @notice Price contract to calculate the price of NFTs, implements BaseNFT
+ * @dev This contract is abstract and should be inherited by the FLIP contract
+ */
+abstract contract Price is BaseNFT {
     constructor(
         string memory _name,
         string memory _symbol,

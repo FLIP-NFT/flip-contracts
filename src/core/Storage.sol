@@ -3,6 +3,11 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/math/Math.sol";
 
+/**
+ * @title Storage Contract
+ * @author @lukema95
+ * @notice Storage contract to store the FLIP data
+ */
 contract Storage {
 
     uint256 public initialPrice;

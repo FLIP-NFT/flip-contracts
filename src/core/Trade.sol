@@ -2,13 +2,14 @@
 pragma solidity ^0.8.0;
 
 import "./Price.sol";
+import "../interfaces/ITrade.sol";
 
-contract Trade is Price {
-    event TokenMinted(address indexed to, uint256 indexed tokenId, uint256 price, uint256 creatorFee);
-    event TokenBought(address indexed buyer, uint256 indexed tokenId, uint256 price, uint256 creatorFee);
-    event TokenSold(address indexed seller, uint256 indexed tokenId, uint256 price, uint256 creatorFee);
-    // event QuickBuyExecuted(address indexed buyer, uint256 indexed tokenId, uint256 price);
-
+/**
+ * @title Trade
+ * @author @lukema95
+ * @notice Trade contract for FLIPs, implements ITrade interface
+ */
+contract Trade is Price, ITrade {
     constructor(
         string memory _name,
         string memory _symbol,
@@ -65,15 +66,6 @@ contract Trade is Price {
         _refundExcess(price + creatorFee);
     }
 
-    // function quickBuy() public payable {
-    //     require(availableTokens.length > 0, "No tokens available for quick buy");
-    //     uint256 tokenId = availableTokens[availableTokens.length - 1];
-        
-    //     buy(tokenId);
-        
-    //     emit QuickBuyExecuted(msg.sender, tokenId, getBuyPrice());
-    // }
-
     function sell(uint256 tokenId) public onlyTokenOwner(tokenId) {
         uint256 price = getSellPrice();
         uint256 creatorFee = price * creatorFeePercent / 1 ether;
@@ -101,5 +93,9 @@ contract Trade is Price {
             (bool success, ) = _msgSender().call{value: refundAmount}("");
             require(success, "Refund failed");
         }
+    }
+
+    function supportsInterface(bytes4 interfaceId) public view virtual override(BaseNFT, IERC165) returns (bool) {
+        return super.supportsInterface(interfaceId) || interfaceId == type(ITrade).interfaceId;
     }
 }

@@ -2,12 +2,12 @@
 pragma solidity ^0.8.13;
 
 import {Test, console} from "forge-std/Test.sol";
-import {Flip} from "../src/Flip.sol";
+import {FlipNFT} from "../../src/examples/FlipNFT.sol";
 
 contract FlipTest is Test {
     receive() external payable {}
 
-    Flip public flip;
+    FlipNFT public flip;
 
     address alice = address(0x1);
     address bob = address(0x2);
@@ -15,7 +15,7 @@ contract FlipTest is Test {
 
     function setUp() public {
         vm.prank(alice);
-        flip = new Flip(
+        flip = new FlipNFT(
             "Flip",
             "FLIP",
             0.001 ether,

@@ -1,10 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./core/Trade.sol";
+import "../core/Trade.sol";
 import "./Trait.sol";
 
-contract Flip is Trade, Trait {
+/**
+ * @title FlipNFT Contract
+ * @author @lukema95
+ * @notice FlipNFT contract is a FLIP contract which implements Trade and Trait
+ */
+contract FlipNFT is Trade, Trait {
     using Strings for uint256;
 
     constructor(

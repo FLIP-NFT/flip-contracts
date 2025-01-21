@@ -3,10 +3,10 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
-import "./Flip.sol";
+import "./core/Trade.sol";
 
 contract FlipPeriphery is ERC721Holder {
-    Flip public immutable flipContract;
+    Trade public immutable flipContract;
 
     event BulkBuyExecuted(address indexed buyer, uint256[] tokenIds, uint256 totalPrice);
     event BulkSellExecuted(address indexed seller, uint256[] tokenIds, uint256 totalPrice);
@@ -15,7 +15,7 @@ contract FlipPeriphery is ERC721Holder {
     event QuickBuyExecuted(address indexed buyer, uint256 indexed tokenId, uint256 price);
 
     constructor(address _flipContractAddress) {
-        flipContract = Flip(payable(_flipContractAddress));
+        flipContract = Trade(payable(_flipContractAddress));
     }
 
     function quickBuy() public payable {
