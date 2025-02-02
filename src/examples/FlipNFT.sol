@@ -20,10 +20,12 @@ contract FlipNFT is Trade, Trait {
         uint256 _creatorFeePercent
     ) Trade(_name, _symbol, _initialPrice, _maxSupply, _creatorFeePercent) {}
 
-    function mint() public payable override {
+    function mint() public payable override returns (uint256) {
         uint256 tokenId = totalSupply() + 1;
         super.mint();
         tokenSeed[tokenId] = block.timestamp;
+
+        return tokenId;
     }
 
     function setCreator(address newCreator) public onlyOwner {

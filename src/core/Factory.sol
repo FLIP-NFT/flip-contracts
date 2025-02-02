@@ -44,19 +44,30 @@ contract Factory {
                 msg.sender
             )
         );
-        
-        Trade trade = new Trade{salt: salt}(
-            _name,
-            _symbol,
-            _initialPrice,
-            _maxSupply,
-            _creatorFeePercent
+
+        bytes memory creationCode = abi.encodePacked(
+            type(Trade).creationCode,
+            abi.encode(
+                _name,
+                _symbol,
+                _initialPrice,
+                _maxSupply,
+                _creatorFeePercent,
+                msg.sender
+            )
         );
 
-        emit FLIPCreated(msg.sender, address(trade));
+        address trade;
+        assembly {
+            trade := create2(0, add(creationCode, 0x20), mload(creationCode), salt)
+        }
         
-        registry.register(msg.sender, address(trade));
-        return address(trade);
+        require(trade != address(0), "Create2: Failed on deploy");
+
+        emit FLIPCreated(msg.sender, trade);
+        
+        registry.register(msg.sender, trade);
+        return trade;
     }
 
     /// @notice Calculate the address of a FLIP contract
@@ -83,11 +94,24 @@ contract Factory {
                 msg.sender
             )
         );
+        
+        bytes memory creationCode = abi.encodePacked(
+            type(Trade).creationCode,
+            abi.encode(
+                _name,
+                _symbol,
+                _initialPrice,
+                _maxSupply,
+                _creatorFeePercent,
+                msg.sender
+            )
+        );
+        
         return address(uint160(uint256(keccak256(abi.encodePacked(
             bytes1(0xff),
             address(this),
             salt,
-            keccak256(type(Trade).creationCode)
+            keccak256(creationCode)
         )))));
     }
 }

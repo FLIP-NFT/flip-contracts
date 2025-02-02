@@ -9,7 +9,7 @@ import "../interfaces/ITrade.sol";
  * @author @lukema95
  * @notice Trade contract for FLIPs, implements ITrade interface
  */
-contract Trade is Price, ITrade {
+contract Trade is ITrade, Price {
     constructor(
         string memory _name,
         string memory _symbol,
@@ -28,7 +28,7 @@ contract Trade is Price, ITrade {
         _;
     }
 
-    function mint() public virtual payable {
+    function mint() public virtual payable returns (uint256) {
         require(totalSupply() < maxSupply, "Max supply reached");
 
         uint256 price = getBuyPrice();
@@ -46,6 +46,8 @@ contract Trade is Price, ITrade {
         require(success, "Transfer failed");
 
         _refundExcess(price + creatorFee);
+
+        return tokenId;
     }
 
     function buy(uint256 tokenId) public payable onlyTokenOnSale(tokenId) {
