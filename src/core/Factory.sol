@@ -26,13 +26,17 @@ contract Factory {
     /// @param _initialPrice The initial price of the FLIP
     /// @param _maxSupply The maximum supply of the FLIP
     /// @param _creatorFeePercent The creator fee percent of the FLIP
+    /// @param _imageUrl The image url of the FLIP
+    /// @param _description The description of the FLIP
     /// @return The address of the FLIP contract
     function createFLIP(
         string memory _name,
         string memory _symbol,
         uint256 _initialPrice,
         uint256 _maxSupply,
-        uint256 _creatorFeePercent
+        uint256 _creatorFeePercent,
+        string memory _imageUrl,
+        string memory _description
     ) public returns (address) {
         bytes32 salt = keccak256(
             abi.encodePacked(
@@ -61,8 +65,21 @@ contract Factory {
         assembly {
             trade := create2(0, add(creationCode, 0x20), mload(creationCode), salt)
         }
-        
         require(trade != address(0), "Create2: Failed on deploy");
+        
+        Trade tradeContract = Trade(trade);
+
+        if (bytes(_imageUrl).length > 0) {
+            tradeContract.setBaseURI(_imageUrl);
+        }
+
+        if (bytes(_description).length > 0) {
+            tradeContract.setDescription(_description);
+        }
+
+        // set creator to msg.sender
+        tradeContract.setCreator(msg.sender);
+        require(tradeContract.creator() == msg.sender, "Creator mismatch");
 
         emit FLIPCreated(msg.sender, trade);
         

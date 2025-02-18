@@ -20,6 +20,14 @@ contract Storage is IStorage {
     uint256[] public availableTokens;
     mapping(uint256 => uint256) public tokenIndex;
 
+    string public baseURI;
+    string public description;
+
+    modifier onlyCreator() {
+        require(msg.sender == creator, "Only creator can call this function");
+        _;
+    }
+
     constructor(uint256 _initialPrice, uint256 _maxSupply, uint256 _creatorFeePercent) {
         initialPrice = _initialPrice;
         maxSupply = _maxSupply;
@@ -27,8 +35,16 @@ contract Storage is IStorage {
         creator = msg.sender;
     }
 
-    function _setCreator(address _creator) internal {
+    function setCreator(address _creator) public onlyCreator {
         creator = _creator;
+    }
+
+    function setBaseURI(string memory _baseURI) public onlyCreator {
+        baseURI = _baseURI;
+    }
+
+    function setDescription(string memory _description) public onlyCreator {
+        description = _description;
     }
 
     /// @notice Get all available tokens

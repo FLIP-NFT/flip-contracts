@@ -25,6 +25,10 @@ contract BaseNFT is ERC721, ERC721Enumerable, ERC721Holder, Ownable, Storage {
         Storage(_initialPrice, _maxSupply, _creatorFeePercent) 
     {}
 
+    function _baseURI() internal view override returns (string memory) {
+        return baseURI;
+    }
+
     function supportsInterface(bytes4 interfaceId) public virtual view override(ERC721, ERC721Enumerable) returns (bool) {
         return super.supportsInterface(interfaceId);
     }

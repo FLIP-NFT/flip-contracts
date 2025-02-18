@@ -28,10 +28,6 @@ contract FlipNFT is Trade, Trait {
         return tokenId;
     }
 
-    function setCreator(address newCreator) public onlyOwner {
-        _setCreator(newCreator);
-    }
-
     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
         uint256 combinedSeed = uint256(keccak256(abi.encodePacked(tokenSeed[tokenId], tokenId)));
         string memory svg = generateRandomSVG(combinedSeed);

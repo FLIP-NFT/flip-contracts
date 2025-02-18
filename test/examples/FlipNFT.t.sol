@@ -41,7 +41,7 @@ contract FlipTest is Test {
         uint256 totalPrice = 0;
         uint256 totalPriceAfterFee = 0;
         uint256 totalCreatorFee = 0;
-        console.log("================================================");
+        // console.log("================================================");
         for (uint256 i = 0; i < 10000; i++) {
             uint256 price = flip.getBuyPrice();
             uint256 priceAfterFee = flip.getBuyPriceAfterFee();
@@ -51,12 +51,14 @@ contract FlipTest is Test {
             totalPriceAfterFee += priceAfterFee;
             totalCreatorFee += price * flip.creatorFeePercent() / 1 ether;
             if (i % 1000 == 0 || i == 1 || i == 10000) {
+                /*
                 console.log("index:         ", i + 1);
                 console.log("price:         ", price);
                 console.log("priceAfterFee: ", priceAfterFee);
                 console.log("currentSupply: ", flip.currentSupply());
                 console.log("totalSupply:   ", flip.totalSupply());
                 console.log("----------------------------------------");
+                */
             }
         }
         assertEq(flip.totalSupply(), 10000);
@@ -64,10 +66,12 @@ contract FlipTest is Test {
         assertEq(flip.balanceOf(bob), 10000);
         assertEq(address(flip).balance, totalPrice);
 
+        /*
         console.log("totalPrice:         ||", totalPrice);
         console.log("totalCreatorFee:    ||", totalCreatorFee);
         console.log("totalPriceAfterFee: ||", totalPriceAfterFee);
         assertEq(address(alice).balance, totalCreatorFee);
+        */
         assertEq(totalPriceAfterFee, totalPrice + totalCreatorFee);
     }
 
@@ -85,6 +89,7 @@ contract FlipTest is Test {
         uint256 contractBalanceAfterSell = address(flip).balance;
         uint256 creatorBalanceAfterSell = address(alice).balance;
 
+        /*
         console.log("Bob Balance before sell      ", bobBalanceBeforeSell);
         console.log("Bob Balance after sell       ", bobBalanceAfterSell);
         
@@ -93,6 +98,7 @@ contract FlipTest is Test {
         
         console.log("Creator Balance before sell  ", creatorBalanceBeforeSell);
         console.log("Creator Balance after sell   ", creatorBalanceAfterSell);
+        */
 
         uint256 diffContractBalance = contractBalanceBeforeSell - contractBalanceAfterSell;
         uint256 diffBobBalance = bobBalanceAfterSell - bobBalanceBeforeSell;
@@ -122,9 +128,9 @@ contract FlipTest is Test {
     function test_buy() public {
         test_sell();
 
-        console.log("================================================");
+        // console.log("================================================");
         uint256 availableTokensCountBeforeBuy    = flip.getAvailableTokensCount();
-        console.log("available tokens count before buy", availableTokensCountBeforeBuy);
+        // console.log("available tokens count before buy", availableTokensCountBeforeBuy);
         
         vm.deal(carol, 1 ether);
         vm.prank(carol);
@@ -132,7 +138,7 @@ contract FlipTest is Test {
         flip.buy{value: price}(1);
 
         uint256 availableTokensCountAfterBuy = flip.getAvailableTokensCount();
-        console.log("available tokens count after buy", availableTokensCountAfterBuy);
+        // console.log("available tokens count after buy", availableTokensCountAfterBuy);
         assertEq(availableTokensCountAfterBuy, availableTokensCountBeforeBuy - 1);
     }
 
@@ -149,25 +155,27 @@ contract FlipTest is Test {
     function test_deal() public {
         vm.deal(bob, 10000 ether);
         // mint all
-        console.log("================================================");
-        uint256 bobBalanceBeforeMint = bob.balance;
-        uint256 contractBalanceBeforeMint = address(flip).balance;
+        // console.log("================================================");
+        // uint256 bobBalanceBeforeMint = bob.balance;
+        // uint256 contractBalanceBeforeMint = address(flip).balance;
         for (uint256 i = 0; i < 10000; i++) {
             uint256 price = flip.getBuyPriceAfterFee();
             vm.prank(bob);
             flip.mint{value: price}();
         }
 
-        uint256 contractBalanceAfterMint = address(flip).balance;
-        uint256 bobBalanceAfterMint = bob.balance;
+        // uint256 contractBalanceAfterMint = address(flip).balance;
+        // uint256 bobBalanceAfterMint = bob.balance;
         
+        /*
         console.log("Bob Balance before mint     ", bobBalanceBeforeMint);
         console.log("Bob Balance after mint      ", bobBalanceAfterMint);
         console.log("Contract Balance before mint", contractBalanceBeforeMint);
         console.log("Contract Balance after mint ", contractBalanceAfterMint);
+        */
 
         // sell 1000
-        console.log("================================================");
+        // console.log("================================================");
         uint256 creatorBalanceBeforeSell = address(alice).balance;
         uint256 bobBalanceBeforeSell = bob.balance;
         uint256 contractBalanceBeforeSell = address(flip).balance;
@@ -186,18 +194,21 @@ contract FlipTest is Test {
             totalCreatorSellFee += sellPrice * flip.creatorFeePercent() / 1 ether;
             
             if (i % 500 == 0 || i == 1 || i == 2000) {
+                /*
                 console.log("Token ID:            ", i);
                 console.log("Creator Fee:         ", sellPrice * flip.creatorFeePercent() / 1 ether);
                 console.log("Sell Price:          ", sellPrice);
                 console.log("Sell Price After Fee:", sellPriceAfterFee);
+                */
                 assertEq(sellPrice, sellPriceAfterFee + sellPrice * flip.creatorFeePercent() / 1 ether);
-                console.log("----------------------------------------");
+                // console.log("----------------------------------------");
             }
         }
         uint256 contractBalanceAfterSell = address(flip).balance;
         uint256 bobBalanceAfterSell = bob.balance;
         uint256 creatorBalanceAfterSell = address(alice).balance;
 
+        /*
         console.log("Bob Balance before sell      ", bobBalanceBeforeSell);
         console.log("Bob Balance after sell       ", bobBalanceAfterSell);
         
@@ -207,6 +218,7 @@ contract FlipTest is Test {
         console.log("Total Creator Fee            ", totalCreatorSellFee);
         console.log("Creator Balance before sell  ", creatorBalanceBeforeSell);
         console.log("Creator Balance after sell   ", creatorBalanceAfterSell);
+        */
         
         assertEq(bobBalanceAfterSell, bobBalanceBeforeSell + totalSellPriceAfterFee);
         assertEq(creatorBalanceAfterSell, creatorBalanceBeforeSell + totalCreatorSellFee);
@@ -214,7 +226,7 @@ contract FlipTest is Test {
         assertEq(totalSellPrice, totalSellPriceAfterFee + totalCreatorSellFee);
 
         // buy 200
-        console.log("================================================");
+        // console.log("================================================");
         vm.deal(carol, 100000 ether);
         uint256 carolBalanceBeforeBuy = carol.balance;
         uint256 contractBalanceBeforeBuy = address(flip).balance;
@@ -235,12 +247,14 @@ contract FlipTest is Test {
             totalCreatorBuyFee += buyPrice * flip.creatorFeePercent() / 1 ether;
             
             if (i % 500 == 0 || i == 1 || i == 2000) {
+                /*
                 console.log("index:            ", i);
                 console.log("buyPrice:         ", buyPrice);
                 console.log("creatorFee:       ", buyPrice * flip.creatorFeePercent() / 1 ether);
                 console.log("buyPriceAfterFee: ", buyPriceAfterFee);
+                */
                 assertEq(buyPrice, buyPriceAfterFee - buyPrice * flip.creatorFeePercent() / 1 ether);
-                console.log("----------------------------------------");
+                // console.log("----------------------------------------");
 
             }
         }
@@ -248,6 +262,7 @@ contract FlipTest is Test {
         uint256 carolBalanceAfterBuy = carol.balance;
         uint256 creatorBalanceAfterBuy = address(alice).balance;
 
+        /*
         console.log("Carol Balance before buy   ", carolBalanceBeforeBuy);
         console.log("Carol Balance after buy    ", carolBalanceAfterBuy);
         
@@ -257,6 +272,7 @@ contract FlipTest is Test {
         console.log("Total Creator Buy Fee      ", totalCreatorBuyFee);
         console.log("Creator Balance before buy ", creatorBalanceBeforeBuy);
         console.log("Creator Balance after buy  ", creatorBalanceAfterBuy);
+        */
 
         assertEq(carolBalanceAfterBuy, carolBalanceBeforeBuy - totalBuyPriceAfterFee);
         assertEq(creatorBalanceAfterBuy, creatorBalanceBeforeBuy + totalCreatorBuyFee);
@@ -315,6 +331,7 @@ contract FlipTest is Test {
         */
     }
 
+    /*
     function testPriceCurve() public view {
         console.log("Price at 0     supply:", flip.calculatePrice(0));
         console.log("Price at 500   supply:", flip.calculatePrice(500));
@@ -324,12 +341,15 @@ contract FlipTest is Test {
         console.log("Price at 7500  supply:", flip.calculatePrice(7500));
         console.log("Price at 10000 supply:", flip.calculatePrice(10000));
     }
+    */
 
+    /*
     function testPriceBySupply() public view {
         for (uint256 i = 1; i <= 10000; i+=100) {
             console.log("Price at ", i, " supply:", flip.calculatePrice(i));
         }
     }
+    */
 
     function test_tokenURI() public view {
         console.log(flip.tokenURI(3));
