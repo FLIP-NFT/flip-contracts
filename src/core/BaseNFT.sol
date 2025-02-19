@@ -14,32 +14,44 @@ import "./Storage.sol";
  */
 contract BaseNFT is ERC721, ERC721Enumerable, ERC721Holder, Ownable, Storage {
     constructor(
-        string memory _name, 
-        string memory _symbol, 
-        uint256 _initialPrice, 
-        uint256 _maxSupply, 
+        string memory _name,
+        string memory _symbol,
+        uint256 _initialPrice,
+        uint256 _maxSupply,
         uint256 _creatorFeePercent
-    ) 
-        ERC721(_name, _symbol) 
-        Ownable(msg.sender) 
-        Storage(_initialPrice, _maxSupply, _creatorFeePercent) 
+    )
+        ERC721(_name, _symbol)
+        Ownable(msg.sender)
+        Storage(_initialPrice, _maxSupply, _creatorFeePercent)
     {}
 
     function _baseURI() internal view override returns (string memory) {
         return baseURI;
     }
 
-    function supportsInterface(bytes4 interfaceId) public virtual view override(ERC721, ERC721Enumerable) returns (bool) {
+    function tokenURI(uint256 tokenId) public view override virtual returns (string memory) {
+        (tokenId);
+        return baseURI;
+    }
+
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view virtual override(ERC721, ERC721Enumerable) returns (bool) {
         return super.supportsInterface(interfaceId);
     }
-    
-    function _update(address to, uint256 tokenId, address auth) 
-        internal virtual override(ERC721, ERC721Enumerable) returns (address) {
+
+    function _update(
+        address to,
+        uint256 tokenId,
+        address auth
+    ) internal virtual override(ERC721, ERC721Enumerable) returns (address) {
         return super._update(to, tokenId, auth);
     }
 
-    function _increaseBalance(address account, uint128 value) 
-        internal virtual override(ERC721, ERC721Enumerable) {
+    function _increaseBalance(
+        address account,
+        uint128 value
+    ) internal virtual override(ERC721, ERC721Enumerable) {
         super._increaseBalance(account, value);
     }
 }

@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/jjvincent/Dropbox/Work/Github/maluning/flip/flip-contracts/src/core/BaseNFT.sol": {
-      "lastModificationDate": 1739707392204,
-      "contentHash": "0d0c142bac4b66943c9373ae5c149d18",
+      "lastModificationDate": 1739973614183,
+      "contentHash": "f1a7063d7a759985a339bb285be956ca",
       "sourceName": "src/core/BaseNFT.sol",
       "solcConfig": {
         "version": "0.8.28",
