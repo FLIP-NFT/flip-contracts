@@ -34,23 +34,38 @@ const config: HardhatUserConfig = {
       url: `https://sepolia.optimism.io`,
       accounts: process.env.WALLET_PRIVATE_KEY ? [process.env.WALLET_PRIVATE_KEY] : [],
       chainId: 11155420
+    },
+    "monad-testnet": {
+      url: `https://testnet-rpc.monad.xyz`,
+      accounts: process.env.WALLET_PRIVATE_KEY ? [process.env.WALLET_PRIVATE_KEY] : [],
+      chainId: 10143
     }
   },
+  sourcify: {
+    enabled: true,
+    apiUrl: "https://sourcify-api-monad.blockvision.org",
+    browserUrl: "https://testnet.monadexplorer.com"
+  },
   etherscan: {
-    apiKey: {
-      "optimism-sepolia": process.env.ETHERSCAN_API_KEY || ""
-    },
-    customChains: [
-      {
-        network: "optimism-sepolia",
-        chainId: 11155420,
-        urls: {
-          apiURL: "https://api-sepolia-optimistic.etherscan.io/api",
-          browserURL: "https://sepolia-optimism.etherscan.io"
-        }
-      }
-    ]
+    enabled: false,
   }
+  // etherscan: {
+  //   enabled: false,
+  //   apiKey: {
+  //     "optimism-sepolia": process.env.ETHERSCAN_API_KEY || "",
+  //     "monad-testnet": process.env.MONAD_API_KEY || ""
+  //   },
+  //   customChains: [
+  //     {
+  //       network: "optimism-sepolia",
+  //       chainId: 11155420,
+  //       urls: {
+  //         apiURL: "https://api-sepolia-optimistic.etherscan.io/api",
+  //         browserURL: "https://sepolia-optimism.etherscan.io"
+  //       }
+  //     }
+  // ]
+  // }
 };
 
 export default config;

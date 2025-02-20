@@ -38,53 +38,46 @@ contract Factory {
         string memory _imageUrl,
         string memory _description
     ) public returns (address) {
-        bytes32 salt = keccak256(
-            abi.encodePacked(
-                _name,
-                _symbol,
-                _initialPrice,
-                _maxSupply,
-                _creatorFeePercent,
-                msg.sender
-            )
-        );
+        bytes32 salt = keccak256(abi.encode(
+            _name,
+            _symbol,
+            _initialPrice,
+            _maxSupply,
+            _creatorFeePercent
+        ));
 
-        bytes memory creationCode = abi.encodePacked(
-            type(Trade).creationCode,
-            abi.encode(
-                _name,
-                _symbol,
-                _initialPrice,
-                _maxSupply,
-                _creatorFeePercent,
-                msg.sender
-            )
-        );
+        // bytes memory initParams = abi.encode(
+        //     _name,
+        //     _symbol,
+        //     _initialPrice,
+        //     _maxSupply,
+        //     _creatorFeePercent
+        // );
 
-        address trade;
-        assembly {
-            trade := create2(0, add(creationCode, 0x20), mload(creationCode), salt)
-        }
-        require(trade != address(0), "Create2: Failed on deploy");
-        
-        Trade tradeContract = Trade(trade);
+        Trade trade = new Trade{salt: salt}(
+            _name,
+            _symbol,
+            _initialPrice,
+            _maxSupply,
+            _creatorFeePercent
+        );
 
         if (bytes(_imageUrl).length > 0) {
-            tradeContract.setBaseURI(_imageUrl);
+            trade.setBaseURI(_imageUrl);
         }
 
         if (bytes(_description).length > 0) {
-            tradeContract.setDescription(_description);
+            trade.setDescription(_description);
         }
 
         // set creator to msg.sender
-        tradeContract.setCreator(msg.sender);
-        require(tradeContract.creator() == msg.sender, "Creator mismatch");
+        trade.setCreator(msg.sender);
+        require(trade.creator() == msg.sender, "Creator mismatch");
 
-        emit FLIPCreated(msg.sender, trade);
+        emit FLIPCreated(msg.sender, address(trade));
         
-        registry.register(msg.sender, trade);
-        return trade;
+        registry.register(msg.sender, address(trade));
+        return address(trade);
     }
 
     /// @notice Calculate the address of a FLIP contract
@@ -101,34 +94,35 @@ contract Factory {
         uint256 _maxSupply,
         uint256 _creatorFeePercent
     ) public view returns (address) {
-        bytes32 salt = keccak256(
+        bytes32 salt = keccak256(abi.encode(
+            _name,
+            _symbol,
+            _initialPrice,
+            _maxSupply,
+            _creatorFeePercent
+        ));
+        
+        bytes memory initParams = abi.encode(
+            _name,
+            _symbol,
+            _initialPrice,
+            _maxSupply,
+            _creatorFeePercent
+        );
+        
+
+        bytes32 hash = keccak256(
             abi.encodePacked(
-                _name,
-                _symbol,
-                _initialPrice,
-                _maxSupply,
-                _creatorFeePercent,
-                msg.sender
+                bytes1(0xff),
+                address(this),
+                salt,
+                keccak256(abi.encodePacked(
+                    type(Trade).creationCode,
+                    initParams
+                ))
             )
         );
-        
-        bytes memory creationCode = abi.encodePacked(
-            type(Trade).creationCode,
-            abi.encode(
-                _name,
-                _symbol,
-                _initialPrice,
-                _maxSupply,
-                _creatorFeePercent,
-                msg.sender
-            )
-        );
-        
-        return address(uint160(uint256(keccak256(abi.encodePacked(
-            bytes1(0xff),
-            address(this),
-            salt,
-            keccak256(creationCode)
-        )))));
+
+        return address(uint160(uint256(hash)));
     }
 }

@@ -1252,8 +1252,8 @@
       ]
     },
     "/Users/jjvincent/Dropbox/Work/Github/maluning/flip/flip-contracts/src/core/Factory.sol": {
-      "lastModificationDate": 1739707399893,
-      "contentHash": "4d0cc444b41b873d3185343c5b3f9f91",
+      "lastModificationDate": 1740051630506,
+      "contentHash": "378e54fc559b2ee591a88ef58022daee",
       "sourceName": "src/core/Factory.sol",
       "solcConfig": {
         "version": "0.8.28",
