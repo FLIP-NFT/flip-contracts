@@ -1,6 +1,6 @@
 import { ethers } from "hardhat";
 
-const flipAddress = "0xF34b329e5e41A68bd4b3fD4333a2330f9d0B78d3";
+const flipAddress = "0x2117b675fd55a013df21af9cbe0d3161b3134d82";
 
 async function main() {
   const FLIP = await ethers.getContractFactory("Trade");

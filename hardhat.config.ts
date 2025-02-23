@@ -39,6 +39,16 @@ const config: HardhatUserConfig = {
       url: `https://testnet-rpc.monad.xyz`,
       accounts: process.env.WALLET_PRIVATE_KEY ? [process.env.WALLET_PRIVATE_KEY] : [],
       chainId: 10143
+    },
+    "ethereum-sepolia": {
+      url: `https://sepolia.drpc.org`,
+      accounts: process.env.WALLET_PRIVATE_KEY ? [process.env.WALLET_PRIVATE_KEY] : [],
+      chainId: 11155111
+    },
+    "scroll-sepolia": {
+      url: `https://sepolia-rpc.scroll.io`,
+      accounts: process.env.WALLET_PRIVATE_KEY ? [process.env.WALLET_PRIVATE_KEY] : [],
+      chainId: 534351
     }
   },
   sourcify: {
