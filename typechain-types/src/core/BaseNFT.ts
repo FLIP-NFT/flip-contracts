@@ -30,10 +30,10 @@ export interface BaseNFTInterface extends Interface {
       | "availableTokens"
       | "balanceOf"
       | "baseURI"
+      | "contractURI"
       | "creator"
       | "creatorFeePercent"
       | "currentSupply"
-      | "description"
       | "getAllAvailableTokens"
       | "getApproved"
       | "getAvailableTokenByIndex"
@@ -52,7 +52,6 @@ export interface BaseNFTInterface extends Interface {
       | "setApprovalForAll"
       | "setBaseURI"
       | "setCreator"
-      | "setDescription"
       | "supportsInterface"
       | "symbol"
       | "tokenByIndex"
@@ -85,6 +84,10 @@ export interface BaseNFTInterface extends Interface {
     values: [AddressLike]
   ): string;
   encodeFunctionData(functionFragment: "baseURI", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "contractURI",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "creator", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "creatorFeePercent",
@@ -92,10 +95,6 @@ export interface BaseNFTInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "currentSupply",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "description",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -159,10 +158,6 @@ export interface BaseNFTInterface extends Interface {
     values: [AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "setDescription",
-    values: [string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
   ): string;
@@ -203,6 +198,10 @@ export interface BaseNFTInterface extends Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "baseURI", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "contractURI",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "creator", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "creatorFeePercent",
@@ -210,10 +209,6 @@ export interface BaseNFTInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "currentSupply",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "description",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -270,10 +265,6 @@ export interface BaseNFTInterface extends Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "setBaseURI", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setCreator", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "setDescription",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
@@ -429,13 +420,13 @@ export interface BaseNFT extends BaseContract {
 
   baseURI: TypedContractMethod<[], [string], "view">;
 
+  contractURI: TypedContractMethod<[], [string], "view">;
+
   creator: TypedContractMethod<[], [string], "view">;
 
   creatorFeePercent: TypedContractMethod<[], [bigint], "view">;
 
   currentSupply: TypedContractMethod<[], [bigint], "view">;
-
-  description: TypedContractMethod<[], [string], "view">;
 
   getAllAvailableTokens: TypedContractMethod<[], [bigint[]], "view">;
 
@@ -510,12 +501,6 @@ export interface BaseNFT extends BaseContract {
     "nonpayable"
   >;
 
-  setDescription: TypedContractMethod<
-    [_description: string],
-    [void],
-    "nonpayable"
-  >;
-
   supportsInterface: TypedContractMethod<
     [interfaceId: BytesLike],
     [boolean],
@@ -571,6 +556,9 @@ export interface BaseNFT extends BaseContract {
     nameOrSignature: "baseURI"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
+    nameOrSignature: "contractURI"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
     nameOrSignature: "creator"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
@@ -579,9 +567,6 @@ export interface BaseNFT extends BaseContract {
   getFunction(
     nameOrSignature: "currentSupply"
   ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "description"
-  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "getAllAvailableTokens"
   ): TypedContractMethod<[], [bigint[]], "view">;
@@ -665,9 +650,6 @@ export interface BaseNFT extends BaseContract {
   getFunction(
     nameOrSignature: "setCreator"
   ): TypedContractMethod<[_creator: AddressLike], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "setDescription"
-  ): TypedContractMethod<[_description: string], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "supportsInterface"
   ): TypedContractMethod<[interfaceId: BytesLike], [boolean], "view">;

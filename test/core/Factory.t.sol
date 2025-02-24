@@ -19,7 +19,7 @@ contract FactoryTest is Test {
     }
 
     function test_createFLIP() public {
-        address contractAddress = factory.createFLIP("Flip", "FLIP", 0.001 ether, 10000, 0.05 ether, "https://flip.com/image.png", "Flip is a great NFT");
+        address contractAddress = factory.createFLIP("Flip", "FLIP", 0.001 ether, 10000, 0.05 ether, "https://flip.com/image.png");
         ITrade flip = ITrade(contractAddress);
         
         address expectedAddress = factory.calculateFLIPAddress("Flip", "FLIP", 0.001 ether, 10000, 0.05 ether);

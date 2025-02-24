@@ -27,7 +27,6 @@ contract Factory {
     /// @param _maxSupply The maximum supply of the FLIP
     /// @param _creatorFeePercent The creator fee percent of the FLIP
     /// @param _imageUrl The image url of the FLIP
-    /// @param _description The description of the FLIP
     /// @return The address of the FLIP contract
     function createFLIP(
         string memory _name,
@@ -35,8 +34,7 @@ contract Factory {
         uint256 _initialPrice,
         uint256 _maxSupply,
         uint256 _creatorFeePercent,
-        string memory _imageUrl,
-        string memory _description
+        string memory _imageUrl
     ) public returns (address) {
         bytes32 salt = keccak256(abi.encode(
             _name,
@@ -45,14 +43,6 @@ contract Factory {
             _maxSupply,
             _creatorFeePercent
         ));
-
-        // bytes memory initParams = abi.encode(
-        //     _name,
-        //     _symbol,
-        //     _initialPrice,
-        //     _maxSupply,
-        //     _creatorFeePercent
-        // );
 
         Trade trade = new Trade{salt: salt}(
             _name,
@@ -64,10 +54,6 @@ contract Factory {
 
         if (bytes(_imageUrl).length > 0) {
             trade.setBaseURI(_imageUrl);
-        }
-
-        if (bytes(_description).length > 0) {
-            trade.setDescription(_description);
         }
 
         // set creator to msg.sender

@@ -29,7 +29,6 @@ export interface StorageInterface extends Interface {
       | "creator"
       | "creatorFeePercent"
       | "currentSupply"
-      | "description"
       | "getAllAvailableTokens"
       | "getAvailableTokenByIndex"
       | "getAvailableTokensCount"
@@ -38,7 +37,6 @@ export interface StorageInterface extends Interface {
       | "maxSupply"
       | "setBaseURI"
       | "setCreator"
-      | "setDescription"
       | "tokenIndex"
   ): FunctionFragment;
 
@@ -54,10 +52,6 @@ export interface StorageInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "currentSupply",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "description",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -87,10 +81,6 @@ export interface StorageInterface extends Interface {
     values: [AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "setDescription",
-    values: [string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "tokenIndex",
     values: [BigNumberish]
   ): string;
@@ -107,10 +97,6 @@ export interface StorageInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "currentSupply",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "description",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -136,10 +122,6 @@ export interface StorageInterface extends Interface {
   decodeFunctionResult(functionFragment: "maxSupply", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setBaseURI", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setCreator", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "setDescription",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "tokenIndex", data: BytesLike): Result;
 }
 
@@ -196,8 +178,6 @@ export interface Storage extends BaseContract {
 
   currentSupply: TypedContractMethod<[], [bigint], "view">;
 
-  description: TypedContractMethod<[], [string], "view">;
-
   getAllAvailableTokens: TypedContractMethod<[], [bigint[]], "view">;
 
   getAvailableTokenByIndex: TypedContractMethod<
@@ -226,12 +206,6 @@ export interface Storage extends BaseContract {
     "nonpayable"
   >;
 
-  setDescription: TypedContractMethod<
-    [_description: string],
-    [void],
-    "nonpayable"
-  >;
-
   tokenIndex: TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
 
   getFunction<T extends ContractMethod = ContractMethod>(
@@ -253,9 +227,6 @@ export interface Storage extends BaseContract {
   getFunction(
     nameOrSignature: "currentSupply"
   ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "description"
-  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "getAllAvailableTokens"
   ): TypedContractMethod<[], [bigint[]], "view">;
@@ -284,9 +255,6 @@ export interface Storage extends BaseContract {
   getFunction(
     nameOrSignature: "setCreator"
   ): TypedContractMethod<[_creator: AddressLike], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "setDescription"
-  ): TypedContractMethod<[_description: string], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "tokenIndex"
   ): TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;

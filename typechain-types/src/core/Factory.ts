@@ -36,15 +36,7 @@ export interface FactoryInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "createFLIP",
-    values: [
-      string,
-      string,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      string,
-      string
-    ]
+    values: [string, string, BigNumberish, BigNumberish, BigNumberish, string]
   ): string;
   encodeFunctionData(functionFragment: "registry", values?: undefined): string;
 
@@ -131,8 +123,7 @@ export interface Factory extends BaseContract {
       _initialPrice: BigNumberish,
       _maxSupply: BigNumberish,
       _creatorFeePercent: BigNumberish,
-      _imageUrl: string,
-      _description: string
+      _imageUrl: string
     ],
     [string],
     "nonpayable"
@@ -166,8 +157,7 @@ export interface Factory extends BaseContract {
       _initialPrice: BigNumberish,
       _maxSupply: BigNumberish,
       _creatorFeePercent: BigNumberish,
-      _imageUrl: string,
-      _description: string
+      _imageUrl: string
     ],
     [string],
     "nonpayable"

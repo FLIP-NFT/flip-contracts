@@ -21,7 +21,6 @@ contract Storage is IStorage {
     mapping(uint256 => uint256) public tokenIndex;
 
     string public baseURI;
-    string public description;
 
     modifier onlyCreator() {
         require(msg.sender == creator, "Only creator can call this function");
@@ -41,10 +40,6 @@ contract Storage is IStorage {
 
     function setBaseURI(string memory _baseURI) public onlyCreator {
         baseURI = _baseURI;
-    }
-
-    function setDescription(string memory _description) public onlyCreator {
-        description = _description;
     }
 
     /// @notice Get all available tokens

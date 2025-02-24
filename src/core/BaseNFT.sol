@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 import "./Storage.sol";
 
 /**
@@ -13,6 +14,8 @@ import "./Storage.sol";
  * @notice Base contract for FLIPs which implements ERC721, ERC721Enumerable, ERC721Holder, Ownable and Storage
  */
 contract BaseNFT is ERC721, ERC721Enumerable, ERC721Holder, Ownable, Storage {
+    using Strings for uint256;
+    
     constructor(
         string memory _name,
         string memory _symbol,
@@ -30,8 +33,12 @@ contract BaseNFT is ERC721, ERC721Enumerable, ERC721Holder, Ownable, Storage {
     }
 
     function tokenURI(uint256 tokenId) public view override virtual returns (string memory) {
-        (tokenId);
-        return baseURI;
+        _requireOwned(tokenId);
+        return bytes(baseURI).length > 0 ? string.concat(baseURI, "/", tokenId.toString(), ".json") : "";
+    }
+
+    function contractURI() public view returns (string memory) {
+        return bytes(baseURI).length > 0 ? string.concat(baseURI, "/collection.json") : "";
     }
 
     function supportsInterface(

@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/jjvincent/Dropbox/Work/Github/maluning/flip/flip-contracts/src/core/BaseNFT.sol": {
-      "lastModificationDate": 1739973614183,
-      "contentHash": "f1a7063d7a759985a339bb285be956ca",
+      "lastModificationDate": 1740379663694,
+      "contentHash": "c952308c6da3856f4eaaf9343bf735e4",
       "sourceName": "src/core/BaseNFT.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -42,6 +42,7 @@
         "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol",
         "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol",
         "@openzeppelin/contracts/access/Ownable.sol",
+        "@openzeppelin/contracts/utils/Strings.sol",
         "./Storage.sol"
       ],
       "versionPragmas": [
@@ -52,8 +53,8 @@
       ]
     },
     "/Users/jjvincent/Dropbox/Work/Github/maluning/flip/flip-contracts/src/core/Storage.sol": {
-      "lastModificationDate": 1739707362135,
-      "contentHash": "d247f1f8c906b449774166e44227b7c6",
+      "lastModificationDate": 1740382176867,
+      "contentHash": "c90c2761789d5edda39819e4ce36f955",
       "sourceName": "src/core/Storage.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -1252,8 +1253,8 @@
       ]
     },
     "/Users/jjvincent/Dropbox/Work/Github/maluning/flip/flip-contracts/src/core/Factory.sol": {
-      "lastModificationDate": 1740051630506,
-      "contentHash": "378e54fc559b2ee591a88ef58022daee",
+      "lastModificationDate": 1740382712729,
+      "contentHash": "fcb08a407d45d62fe1ae11beb16a6a47",
       "sourceName": "src/core/Factory.sol",
       "solcConfig": {
         "version": "0.8.28",
