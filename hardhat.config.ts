@@ -49,6 +49,11 @@ const config: HardhatUserConfig = {
       url: `https://sepolia-rpc.scroll.io`,
       accounts: process.env.WALLET_PRIVATE_KEY ? [process.env.WALLET_PRIVATE_KEY] : [],
       chainId: 534351
+    },
+    "mantle-sepolia": {
+      url: `https://rpc.sepolia.mantle.xyz`,
+      accounts: process.env.WALLET_PRIVATE_KEY ? [process.env.WALLET_PRIVATE_KEY] : [],
+      chainId: 5003
     }
   },
   sourcify: {

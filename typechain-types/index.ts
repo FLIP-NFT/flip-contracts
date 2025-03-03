@@ -52,6 +52,8 @@ export type { FlipNFT } from "./src/examples/FlipNFT";
 export { FlipNFT__factory } from "./factories/src/examples/FlipNFT__factory";
 export type { Trait } from "./src/examples/Trait";
 export { Trait__factory } from "./factories/src/examples/Trait__factory";
+export type { IBaseNFT } from "./src/interfaces/IBaseNFT";
+export { IBaseNFT__factory } from "./factories/src/interfaces/IBaseNFT__factory";
 export type { IPrice } from "./src/interfaces/IPrice";
 export { IPrice__factory } from "./factories/src/interfaces/IPrice__factory";
 export type { IStorage } from "./src/interfaces/IStorage";

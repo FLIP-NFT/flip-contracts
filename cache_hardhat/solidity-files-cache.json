@@ -1298,6 +1298,53 @@
       "artifacts": [
         "Factory"
       ]
+    },
+    "/Users/jjvincent/Dropbox/Work/Github/maluning/flip/flip-contracts/src/interfaces/IBaseNFT.sol": {
+      "lastModificationDate": 1740975897510,
+      "contentHash": "447ae6b8c1cf3a2b50dee350f6c23147",
+      "sourceName": "src/interfaces/IBaseNFT.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200,
+            "details": {
+              "yul": true,
+              "yulDetails": {
+                "stackAllocation": true,
+                "optimizerSteps": "u"
+              }
+            }
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC721/IERC721.sol",
+        "./IStorage.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "IBaseNFT"
+      ]
     }
   }
 }

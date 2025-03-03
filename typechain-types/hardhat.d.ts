@@ -106,6 +106,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Trait__factory>;
     getContractFactory(
+      name: "IBaseNFT",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IBaseNFT__factory>;
+    getContractFactory(
       name: "IPrice",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IPrice__factory>;
@@ -238,6 +242,11 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.Trait>;
     getContractAt(
+      name: "IBaseNFT",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IBaseNFT>;
+    getContractAt(
       name: "IPrice",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -351,6 +360,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.Trait>;
     deployContract(
+      name: "IBaseNFT",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IBaseNFT>;
+    deployContract(
       name: "IPrice",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IPrice>;
@@ -482,6 +495,11 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.Trait>;
+    deployContract(
+      name: "IBaseNFT",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IBaseNFT>;
     deployContract(
       name: "IPrice",
       args: any[],
