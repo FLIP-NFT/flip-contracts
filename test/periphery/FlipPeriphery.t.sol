@@ -20,6 +20,30 @@ contract FlipPeripheryTest is Test {
         flipPeriphery = new FlipPeriphery();
     }
 
+    function test_mint() public {
+        vm.deal(alice, 100 ether);
+        vm.prank(alice);
+        flipPeriphery.mint{value: 1 ether}(address(trade));
+        assertEq(trade.balanceOf(alice), 1);
+    }
+
+    function test_sell_and_buy() public {
+        vm.deal(alice, 100 ether);
+        vm.prank(alice);
+        flipPeriphery.mint{value: 1 ether}(address(trade));
+        assertEq(trade.balanceOf(alice), 1);
+
+        vm.prank(alice);
+        trade.setApprovalForAll(address(flipPeriphery), true);
+        vm.prank(alice);
+        flipPeriphery.sell(address(trade), 1);
+        assertEq(trade.balanceOf(alice), 0);
+
+        vm.prank(alice);
+        flipPeriphery.buy{value: 1 ether}(address(trade), 1);
+        assertEq(trade.balanceOf(alice), 1);
+    }
+    
     function test_bulkMint() public {
         vm.deal(alice, 100 ether);
         vm.prank(alice);
