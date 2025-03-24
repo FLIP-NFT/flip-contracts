@@ -61,6 +61,10 @@ contract Factory {
             trade.setBaseURI(_imageUrl);
         }
 
+        // transfer ownership to msg.sender
+        trade.transferOwnership(msg.sender);
+        require(trade.owner() == msg.sender, "Owner mismatch");
+
         // set creator to msg.sender
         trade.setCreator(msg.sender);
         require(trade.creator() == msg.sender, "Creator mismatch");
