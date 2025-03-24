@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "./Registry.sol";
+import "./FeeVault.sol";
 import "./Trade.sol";
 
 /**
@@ -15,9 +16,11 @@ contract Factory {
     event FLIPCreated(address indexed creator, address indexed flipAddress);
 
     Registry public registry;
+    FeeVault public feeVault;
 
-    constructor(address _registry) {
+    constructor(address _registry, address _feeVault) {
         registry = Registry(_registry);
+        feeVault = FeeVault(payable(_feeVault));
     }
 
     /// @notice Create a FLIP contract
@@ -37,6 +40,7 @@ contract Factory {
         string memory _imageUrl
     ) public returns (address) {
         bytes32 salt = keccak256(abi.encode(
+            address(feeVault),
             _name,
             _symbol,
             _initialPrice,
@@ -45,6 +49,7 @@ contract Factory {
         ));
 
         Trade trade = new Trade{salt: salt}(
+            address(feeVault),
             _name,
             _symbol,
             _initialPrice,
@@ -81,6 +86,7 @@ contract Factory {
         uint256 _creatorFeePercent
     ) public view returns (address) {
         bytes32 salt = keccak256(abi.encode(
+            address(feeVault),
             _name,
             _symbol,
             _initialPrice,
@@ -89,6 +95,7 @@ contract Factory {
         ));
         
         bytes memory initParams = abi.encode(
+            address(feeVault),
             _name,
             _symbol,
             _initialPrice,

@@ -4,17 +4,19 @@ pragma solidity ^0.8.0;
 import {Test, console} from "forge-std/Test.sol";
 import {FlipPeriphery} from "../../src/periphery/FlipPeriphery.sol";
 import {Trade} from "../../src/core/Trade.sol";
+import {FeeVault} from "../../src/core/FeeVault.sol";
 
 contract FlipPeripheryTest is Test {
     receive() external payable {}
     
     FlipPeriphery public flipPeriphery;
     Trade public trade;
-
+    FeeVault public feeVault;
     address alice = address(0x1);
 
     function setUp() public {
-        trade = new Trade("Flip", "FLIP", 0.001 ether, 10000, 0.05 ether);
+        feeVault = new FeeVault();
+        trade = new Trade(address(feeVault), "Flip", "FLIP", 0.001 ether, 10000, 0.05 ether);
         flipPeriphery = new FlipPeriphery();
     }
 

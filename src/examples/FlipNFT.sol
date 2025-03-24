@@ -13,12 +13,13 @@ contract FlipNFT is Trade, Trait {
     using Strings for uint256;
 
     constructor(
+        address _feeVault,
         string memory _name,
         string memory _symbol,
         uint256 _initialPrice,  
         uint256 _maxSupply,
         uint256 _creatorFeePercent
-    ) Trade(_name, _symbol, _initialPrice, _maxSupply, _creatorFeePercent) {}
+    ) Trade(_feeVault, _name, _symbol, _initialPrice, _maxSupply, _creatorFeePercent) {}
 
     function mint() public payable override returns (uint256) {
         uint256 tokenId = totalSupply() + 1;

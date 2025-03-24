@@ -4,18 +4,20 @@ pragma solidity ^0.8.13;
 import {Test, console} from "forge-std/Test.sol";
 import {Factory} from "../../src/core/Factory.sol";
 import {Registry} from "../../src/core/Registry.sol";
+import {FeeVault} from "../../src/core/FeeVault.sol";
 import {ITrade} from "../../src/interfaces/ITrade.sol";
 import {IPrice} from "../../src/interfaces/IPrice.sol";
 
 contract FactoryTest is Test {
     Factory public factory;
     Registry public registry;
-
+    FeeVault public feeVault;
     receive() external payable {}
     
     function setUp() public {
         registry = new Registry();
-        factory = new Factory(address(registry));
+        feeVault = new FeeVault();
+        factory = new Factory(address(registry), address(feeVault));
     }
 
     function test_createFLIP() public {
