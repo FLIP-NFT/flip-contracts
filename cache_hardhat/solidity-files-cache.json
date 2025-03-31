@@ -925,8 +925,8 @@
       ]
     },
     "/Users/jjvincent/Dropbox/Work/Github/maluning/flip/flip-contracts/src/core/Trade.sol": {
-      "lastModificationDate": 1738558667285,
-      "contentHash": "f5cf18bca84450685c49709fe33b9296",
+      "lastModificationDate": 1742799578514,
+      "contentHash": "cc233bc573d2df218ca6b5b28fe361dd",
       "sourceName": "src/core/Trade.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -962,6 +962,7 @@
       },
       "imports": [
         "./Price.sol",
+        "./FeeVault.sol",
         "../interfaces/ITrade.sol"
       ],
       "versionPragmas": [
@@ -1018,8 +1019,8 @@
       ]
     },
     "/Users/jjvincent/Dropbox/Work/Github/maluning/flip/flip-contracts/src/examples/FlipNFT.sol": {
-      "lastModificationDate": 1739633327602,
-      "contentHash": "6ba493e7ccb445ef406add3e8a574f54",
+      "lastModificationDate": 1742802233122,
+      "contentHash": "1dcf04e90ee257a795f65a44ad8da688",
       "sourceName": "src/examples/FlipNFT.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -1157,8 +1158,8 @@
       ]
     },
     "/Users/jjvincent/Dropbox/Work/Github/maluning/flip/flip-contracts/src/periphery/FlipPeriphery.sol": {
-      "lastModificationDate": 1738558668797,
-      "contentHash": "c5940f1419b1d84a9d953ede06698666",
+      "lastModificationDate": 1742900508194,
+      "contentHash": "816d1ea672ffc425a3452f0fb7c8d82c",
       "sourceName": "src/periphery/FlipPeriphery.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -1253,8 +1254,8 @@
       ]
     },
     "/Users/jjvincent/Dropbox/Work/Github/maluning/flip/flip-contracts/src/core/Factory.sol": {
-      "lastModificationDate": 1740382712729,
-      "contentHash": "fcb08a407d45d62fe1ae11beb16a6a47",
+      "lastModificationDate": 1743317284454,
+      "contentHash": "c06c3af5497dbdfcf885050fc2fd0bab",
       "sourceName": "src/core/Factory.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -1290,6 +1291,7 @@
       },
       "imports": [
         "./Registry.sol",
+        "./FeeVault.sol",
         "./Trade.sol"
       ],
       "versionPragmas": [
@@ -1344,6 +1346,50 @@
       ],
       "artifacts": [
         "IBaseNFT"
+      ]
+    },
+    "/Users/jjvincent/Dropbox/Work/Github/maluning/flip/flip-contracts/src/core/FeeVault.sol": {
+      "lastModificationDate": 1742799086690,
+      "contentHash": "493114ad0accc04a6f1f64bc4b1a991e",
+      "sourceName": "src/core/FeeVault.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200,
+            "details": {
+              "yul": true,
+              "yulDetails": {
+                "stackAllocation": true,
+                "optimizerSteps": "u"
+              }
+            }
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "FeeVault"
       ]
     }
   }

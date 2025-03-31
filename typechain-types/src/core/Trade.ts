@@ -36,6 +36,7 @@ export interface TradeInterface extends Interface {
       | "creator"
       | "creatorFeePercent"
       | "currentSupply"
+      | "feeVault"
       | "getAllAvailableTokens"
       | "getApproved"
       | "getAvailableTokenByIndex"
@@ -114,6 +115,7 @@ export interface TradeInterface extends Interface {
     functionFragment: "currentSupply",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "feeVault", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "getAllAvailableTokens",
     values?: undefined
@@ -255,6 +257,7 @@ export interface TradeInterface extends Interface {
     functionFragment: "currentSupply",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "feeVault", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getAllAvailableTokens",
     data: BytesLike
@@ -570,6 +573,8 @@ export interface Trade extends BaseContract {
 
   currentSupply: TypedContractMethod<[], [bigint], "view">;
 
+  feeVault: TypedContractMethod<[], [string], "view">;
+
   getAllAvailableTokens: TypedContractMethod<[], [bigint[]], "view">;
 
   getApproved: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
@@ -729,6 +734,9 @@ export interface Trade extends BaseContract {
   getFunction(
     nameOrSignature: "currentSupply"
   ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "feeVault"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "getAllAvailableTokens"
   ): TypedContractMethod<[], [bigint[]], "view">;

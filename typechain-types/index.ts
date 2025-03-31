@@ -40,6 +40,8 @@ export type { BaseNFT } from "./src/core/BaseNFT";
 export { BaseNFT__factory } from "./factories/src/core/BaseNFT__factory";
 export type { Factory } from "./src/core/Factory";
 export { Factory__factory } from "./factories/src/core/Factory__factory";
+export type { FeeVault } from "./src/core/FeeVault";
+export { FeeVault__factory } from "./factories/src/core/FeeVault__factory";
 export type { Price } from "./src/core/Price";
 export { Price__factory } from "./factories/src/core/Price__factory";
 export type { Registry } from "./src/core/Registry";

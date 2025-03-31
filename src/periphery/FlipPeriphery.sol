@@ -15,13 +15,13 @@ import "../interfaces/IPrice.sol";
 contract FlipPeriphery is ERC721Holder {
 
     /// @notice Event emitted when a mint is executed
-    event Minted(address indexed flipContract, address indexed to, uint256 indexed tokenId);
+    event Minted(address indexed flipContract, address indexed to, uint256 indexed tokenId, uint256 price);
 
     /// @notice Event emitted when a buy is executed
-    event Bought(address indexed flipContract, address indexed buyer, uint256 indexed tokenId);
+    event Bought(address indexed flipContract, address indexed buyer, uint256 indexed tokenId, uint256 price);
 
     /// @notice Event emitted when a sell is executed
-    event Sold(address indexed flipContract, address indexed seller, uint256 indexed tokenId);
+    event Sold(address indexed flipContract, address indexed seller, uint256 indexed tokenId, uint256 price);
 
     /// @notice Event emitted when a bulk buy is executed
     event BulkBuyExecuted(address indexed flipContract, address indexed buyer, uint256[] tokenIds, uint256 totalPrice);
@@ -42,21 +42,25 @@ contract FlipPeriphery is ERC721Holder {
     /// @param _flipContractAddress The address of the flip contract
     function mint(address _flipContractAddress) external payable {
         ITrade flipContract = ITrade(_flipContractAddress);
+        IPrice priceContract = IPrice(_flipContractAddress);
+        uint256 price = priceContract.getBuyPriceAfterFee();
         uint256 tokenId = flipContract.mint{value: msg.value}();
         flipContract.transferFrom(address(this), msg.sender, tokenId);
 
-        emit Minted(_flipContractAddress, msg.sender, tokenId);
+        emit Minted(_flipContractAddress, msg.sender, tokenId, price);
     }
 
     /// @notice Buy a NFT
     /// @param _flipContractAddress The address of the flip contract
     /// @param tokenId The ID of the NFT to buy
     function buy(address _flipContractAddress, uint256 tokenId) external payable {
+        IPrice priceContract = IPrice(_flipContractAddress);
+        uint256 price = priceContract.getBuyPriceAfterFee();
         ITrade flipContract = ITrade(_flipContractAddress);
         flipContract.buy{value: msg.value}(tokenId);
         flipContract.transferFrom(address(this), msg.sender, tokenId);
 
-        emit Bought(_flipContractAddress, msg.sender, tokenId);
+        emit Bought(_flipContractAddress, msg.sender, tokenId, price);
     }
 
     /// @notice Sell a NFT
@@ -72,7 +76,7 @@ contract FlipPeriphery is ERC721Holder {
         (bool success, ) = msg.sender.call{value: price}("");
         require(success, "Transfer failed");
 
-        emit Sold(_flipContractAddress, msg.sender, tokenId);
+        emit Sold(_flipContractAddress, msg.sender, tokenId, price);
     }
 
     /// @notice Quick buy a NFT

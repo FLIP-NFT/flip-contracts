@@ -13,7 +13,16 @@ import "./Trade.sol";
 contract Factory {
 
     /// @notice Event emitted when a FLIP contract is created
-    event FLIPCreated(address indexed creator, address indexed flipAddress);
+    event FLIPCreated(
+        address indexed creator,
+        address indexed flipAddress,
+        string name,
+        string symbol,
+        uint256 initialPrice,
+        uint256 maxSupply,
+        uint256 creatorFeePercent,
+        string baseURI
+    );
 
     Registry public registry;
     FeeVault public feeVault;
@@ -29,7 +38,7 @@ contract Factory {
     /// @param _initialPrice The initial price of the FLIP
     /// @param _maxSupply The maximum supply of the FLIP
     /// @param _creatorFeePercent The creator fee percent of the FLIP
-    /// @param _imageUrl The image url of the FLIP
+    /// @param _baseURI The base URI of the FLIP
     /// @return The address of the FLIP contract
     function createFLIP(
         string memory _name,
@@ -37,7 +46,7 @@ contract Factory {
         uint256 _initialPrice,
         uint256 _maxSupply,
         uint256 _creatorFeePercent,
-        string memory _imageUrl
+        string memory _baseURI
     ) public returns (address) {
         bytes32 salt = keccak256(abi.encode(
             address(feeVault),
@@ -57,8 +66,8 @@ contract Factory {
             _creatorFeePercent
         );
 
-        if (bytes(_imageUrl).length > 0) {
-            trade.setBaseURI(_imageUrl);
+        if (bytes(_baseURI).length > 0) {
+            trade.setBaseURI(_baseURI);
         }
 
         // transfer ownership to msg.sender
@@ -69,7 +78,7 @@ contract Factory {
         trade.setCreator(msg.sender);
         require(trade.creator() == msg.sender, "Creator mismatch");
 
-        emit FLIPCreated(msg.sender, address(trade));
+        emit FLIPCreated(msg.sender, address(trade), _name, _symbol, _initialPrice, _maxSupply, _creatorFeePercent, _baseURI);
         
         registry.register(msg.sender, address(trade));
         return address(trade);
@@ -81,13 +90,15 @@ contract Factory {
     /// @param _initialPrice The initial price of the FLIP
     /// @param _maxSupply The maximum supply of the FLIP
     /// @param _creatorFeePercent The creator fee percent of the FLIP
+    /// @param _baseURI The base URI of the FLIP
     /// @return The address of the FLIP contract
     function calculateFLIPAddress(
         string memory _name,  
         string memory _symbol,
         uint256 _initialPrice,
         uint256 _maxSupply,
-        uint256 _creatorFeePercent
+        uint256 _creatorFeePercent,
+        string memory _baseURI
     ) public view returns (address) {
         bytes32 salt = keccak256(abi.encode(
             address(feeVault),
@@ -95,7 +106,8 @@ contract Factory {
             _symbol,
             _initialPrice,
             _maxSupply,
-            _creatorFeePercent
+            _creatorFeePercent,
+            _baseURI
         ));
         
         bytes memory initParams = abi.encode(
@@ -104,7 +116,8 @@ contract Factory {
             _symbol,
             _initialPrice,
             _maxSupply,
-            _creatorFeePercent
+            _creatorFeePercent,
+            _baseURI
         );
         
 

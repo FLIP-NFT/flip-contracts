@@ -25,19 +25,24 @@ import type {
 
 export interface FactoryInterface extends Interface {
   getFunction(
-    nameOrSignature: "calculateFLIPAddress" | "createFLIP" | "registry"
+    nameOrSignature:
+      | "calculateFLIPAddress"
+      | "createFLIP"
+      | "feeVault"
+      | "registry"
   ): FunctionFragment;
 
   getEvent(nameOrSignatureOrTopic: "FLIPCreated"): EventFragment;
 
   encodeFunctionData(
     functionFragment: "calculateFLIPAddress",
-    values: [string, string, BigNumberish, BigNumberish, BigNumberish]
+    values: [string, string, BigNumberish, BigNumberish, BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "createFLIP",
     values: [string, string, BigNumberish, BigNumberish, BigNumberish, string]
   ): string;
+  encodeFunctionData(functionFragment: "feeVault", values?: undefined): string;
   encodeFunctionData(functionFragment: "registry", values?: undefined): string;
 
   decodeFunctionResult(
@@ -45,15 +50,40 @@ export interface FactoryInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "createFLIP", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "feeVault", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "registry", data: BytesLike): Result;
 }
 
 export namespace FLIPCreatedEvent {
-  export type InputTuple = [creator: AddressLike, flipAddress: AddressLike];
-  export type OutputTuple = [creator: string, flipAddress: string];
+  export type InputTuple = [
+    creator: AddressLike,
+    flipAddress: AddressLike,
+    name: string,
+    symbol: string,
+    initialPrice: BigNumberish,
+    maxSupply: BigNumberish,
+    creatorFeePercent: BigNumberish,
+    baseURI: string
+  ];
+  export type OutputTuple = [
+    creator: string,
+    flipAddress: string,
+    name: string,
+    symbol: string,
+    initialPrice: bigint,
+    maxSupply: bigint,
+    creatorFeePercent: bigint,
+    baseURI: string
+  ];
   export interface OutputObject {
     creator: string;
     flipAddress: string;
+    name: string;
+    symbol: string;
+    initialPrice: bigint;
+    maxSupply: bigint;
+    creatorFeePercent: bigint;
+    baseURI: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -110,7 +140,8 @@ export interface Factory extends BaseContract {
       _symbol: string,
       _initialPrice: BigNumberish,
       _maxSupply: BigNumberish,
-      _creatorFeePercent: BigNumberish
+      _creatorFeePercent: BigNumberish,
+      _baseURI: string
     ],
     [string],
     "view"
@@ -123,11 +154,13 @@ export interface Factory extends BaseContract {
       _initialPrice: BigNumberish,
       _maxSupply: BigNumberish,
       _creatorFeePercent: BigNumberish,
-      _imageUrl: string
+      _baseURI: string
     ],
     [string],
     "nonpayable"
   >;
+
+  feeVault: TypedContractMethod<[], [string], "view">;
 
   registry: TypedContractMethod<[], [string], "view">;
 
@@ -143,7 +176,8 @@ export interface Factory extends BaseContract {
       _symbol: string,
       _initialPrice: BigNumberish,
       _maxSupply: BigNumberish,
-      _creatorFeePercent: BigNumberish
+      _creatorFeePercent: BigNumberish,
+      _baseURI: string
     ],
     [string],
     "view"
@@ -157,11 +191,14 @@ export interface Factory extends BaseContract {
       _initialPrice: BigNumberish,
       _maxSupply: BigNumberish,
       _creatorFeePercent: BigNumberish,
-      _imageUrl: string
+      _baseURI: string
     ],
     [string],
     "nonpayable"
   >;
+  getFunction(
+    nameOrSignature: "feeVault"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "registry"
   ): TypedContractMethod<[], [string], "view">;
@@ -175,7 +212,7 @@ export interface Factory extends BaseContract {
   >;
 
   filters: {
-    "FLIPCreated(address,address)": TypedContractEvent<
+    "FLIPCreated(address,address,string,string,uint256,uint256,uint256,string)": TypedContractEvent<
       FLIPCreatedEvent.InputTuple,
       FLIPCreatedEvent.OutputTuple,
       FLIPCreatedEvent.OutputObject
