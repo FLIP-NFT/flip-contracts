@@ -1,18 +1,17 @@
 import { ethers } from "hardhat";
 
 // Factory contract address, replace with your own
-const factoryAddress = "0x625468C624C2878C7413349584B93d6696DeA5e3";
+const factoryAddress = "0xDE036CC536Db3f0695047be1714cb798264362a6";
 
 async function main() {
   // Contract params
   const params = {
-    name: "FlipTest",
-    symbol: "FLIPTEST",
+    name: "FlipTest1",
+    symbol: "FLIPTEST1",
     initialPrice: ethers.parseEther("0.001"),
     maxSupply: 10000n,
     creatorFeePercent: ethers.parseEther("0.05"),  // 5%
     imageUrl: "https://ipfs.io/ipfs/bafkreifr2xwkezwgbtexlkzot4rnaiabgn6asycf63wy2ns4oh27irxqpm",
-    description: "FLIP NFT is an NFT standard constructed using the Bonding Curve algorithm, representing FLIP platform's first attempt at this mechanism. With a total supply of 10,000, its Mint Price/Buy Price/Sell Price increases as the supply increases."
   };
 
   // Get Factory contract instance
@@ -27,8 +26,7 @@ async function main() {
     params.initialPrice,
     params.maxSupply,
     params.creatorFeePercent,
-    params.imageUrl,
-    params.description
+    params.imageUrl
   );
 
   console.log("Transaction hash:", tx.hash);

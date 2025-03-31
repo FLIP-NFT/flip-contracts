@@ -4,20 +4,46 @@ pragma solidity ^0.8.0;
 import {Test, console} from "forge-std/Test.sol";
 import {FlipPeriphery} from "../../src/periphery/FlipPeriphery.sol";
 import {Trade} from "../../src/core/Trade.sol";
+import {FeeVault} from "../../src/core/FeeVault.sol";
 
 contract FlipPeripheryTest is Test {
     receive() external payable {}
     
     FlipPeriphery public flipPeriphery;
     Trade public trade;
-
+    FeeVault public feeVault;
     address alice = address(0x1);
 
     function setUp() public {
-        trade = new Trade("Flip", "FLIP", 0.001 ether, 10000, 0.05 ether);
+        feeVault = new FeeVault();
+        trade = new Trade(address(feeVault), "Flip", "FLIP", 0.001 ether, 10000, 0.05 ether);
         flipPeriphery = new FlipPeriphery();
     }
 
+    function test_mint() public {
+        vm.deal(alice, 100 ether);
+        vm.prank(alice);
+        flipPeriphery.mint{value: 1 ether}(address(trade));
+        assertEq(trade.balanceOf(alice), 1);
+    }
+
+    function test_sell_and_buy() public {
+        vm.deal(alice, 100 ether);
+        vm.prank(alice);
+        flipPeriphery.mint{value: 1 ether}(address(trade));
+        assertEq(trade.balanceOf(alice), 1);
+
+        vm.prank(alice);
+        trade.setApprovalForAll(address(flipPeriphery), true);
+        vm.prank(alice);
+        flipPeriphery.sell(address(trade), 1);
+        assertEq(trade.balanceOf(alice), 0);
+
+        vm.prank(alice);
+        flipPeriphery.buy{value: 1 ether}(address(trade), 1);
+        assertEq(trade.balanceOf(alice), 1);
+    }
+    
     function test_bulkMint() public {
         vm.deal(alice, 100 ether);
         vm.prank(alice);

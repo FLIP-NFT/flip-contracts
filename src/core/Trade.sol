@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "./Price.sol";
+import "./FeeVault.sol";
 import "../interfaces/ITrade.sol";
 
 /**
@@ -10,13 +11,17 @@ import "../interfaces/ITrade.sol";
  * @notice Trade contract for FLIPs, implements ITrade interface
  */
 contract Trade is ITrade, Price {
+    FeeVault public feeVault;
     constructor(
+        address _feeVault,
         string memory _name,
         string memory _symbol,
         uint256 _initialPrice,
         uint256 _maxSupply,
         uint256 _creatorFeePercent
-    ) Price(_name, _symbol, _initialPrice, _maxSupply, _creatorFeePercent) {}
+    ) Price(_name, _symbol, _initialPrice, _maxSupply, _creatorFeePercent) {
+        feeVault = FeeVault(payable(_feeVault));
+    }
 
     modifier onlyTokenOwner(uint256 tokenId) {
         require(ownerOf(tokenId) == _msgSender(), "Caller is not owner");
@@ -42,8 +47,7 @@ contract Trade is ITrade, Price {
 
         emit TokenMinted(msg.sender, tokenId, price, creatorFee);
 
-        (bool success, ) = creator.call{value: creatorFee}("");
-        require(success, "Transfer failed");
+        distributeFee(creatorFee);
 
         _refundExcess(price + creatorFee);
 
@@ -62,8 +66,7 @@ contract Trade is ITrade, Price {
 
         emit TokenBought(msg.sender, tokenId, price, creatorFee);
 
-        (bool success, ) = creator.call{value: creatorFee}("");
-        require(success, "Transfer failed");
+        distributeFee(creatorFee);
 
         _refundExcess(price + creatorFee);
     }
@@ -81,12 +84,22 @@ contract Trade is ITrade, Price {
         (bool sentToSeller, ) = _msgSender().call{value: price - creatorFee}("");
         require(sentToSeller, "Transfer to seller failed");
 
-        (bool sentToCreator, ) = creator.call{value: creatorFee}("");
-        require(sentToCreator, "Transfer to creator failed");
+        distributeFee(creatorFee);
     }
 
     function isOnSale(uint256 tokenId) public view returns (bool) {
         return ownerOf(tokenId) == address(this);
+    }
+
+    function distributeFee(uint256 fee) internal {
+        uint256 protocolFee = (fee * feeVault.PROTOCOL_FEE_PERCENT()) / 1 ether;
+        uint256 creatorFee = fee - protocolFee;
+
+        (bool success, ) = creator.call{value: creatorFee}("");
+        require(success, "Transfer fee to creator failed");
+
+        (bool successProtocol, ) = address(feeVault).call{value: protocolFee}("");
+        require(successProtocol, "Transfer fee to protocol failed");
     }
 
     function _refundExcess(uint256 price) internal {

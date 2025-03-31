@@ -30,17 +30,23 @@ export interface FlipPeripheryInterface extends Interface {
       | "bulkMint"
       | "bulkQuickBuy"
       | "bulkSell"
+      | "buy"
+      | "mint"
       | "onERC721Received"
       | "quickBuy"
+      | "sell"
   ): FunctionFragment;
 
   getEvent(
     nameOrSignatureOrTopic:
+      | "Bought"
       | "BulkBuyExecuted"
       | "BulkMintExecuted"
       | "BulkQuickBuyExecuted"
       | "BulkSellExecuted"
+      | "Minted"
       | "QuickBuyExecuted"
+      | "Sold"
   ): EventFragment;
 
   encodeFunctionData(
@@ -60,12 +66,21 @@ export interface FlipPeripheryInterface extends Interface {
     values: [AddressLike, BigNumberish[]]
   ): string;
   encodeFunctionData(
+    functionFragment: "buy",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(functionFragment: "mint", values: [AddressLike]): string;
+  encodeFunctionData(
     functionFragment: "onERC721Received",
     values: [AddressLike, AddressLike, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "quickBuy",
     values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "sell",
+    values: [AddressLike, BigNumberish]
   ): string;
 
   decodeFunctionResult(functionFragment: "bulkBuy", data: BytesLike): Result;
@@ -75,25 +90,56 @@ export interface FlipPeripheryInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "bulkSell", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "buy", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "onERC721Received",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "quickBuy", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "sell", data: BytesLike): Result;
+}
+
+export namespace BoughtEvent {
+  export type InputTuple = [
+    flipContract: AddressLike,
+    buyer: AddressLike,
+    tokenId: BigNumberish,
+    price: BigNumberish
+  ];
+  export type OutputTuple = [
+    flipContract: string,
+    buyer: string,
+    tokenId: bigint,
+    price: bigint
+  ];
+  export interface OutputObject {
+    flipContract: string;
+    buyer: string;
+    tokenId: bigint;
+    price: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
 
 export namespace BulkBuyExecutedEvent {
   export type InputTuple = [
+    flipContract: AddressLike,
     buyer: AddressLike,
     tokenIds: BigNumberish[],
     totalPrice: BigNumberish
   ];
   export type OutputTuple = [
+    flipContract: string,
     buyer: string,
     tokenIds: bigint[],
     totalPrice: bigint
   ];
   export interface OutputObject {
+    flipContract: string;
     buyer: string;
     tokenIds: bigint[];
     totalPrice: bigint;
@@ -106,16 +152,19 @@ export namespace BulkBuyExecutedEvent {
 
 export namespace BulkMintExecutedEvent {
   export type InputTuple = [
+    flipContract: AddressLike,
     buyer: AddressLike,
     quantity: BigNumberish,
     totalPrice: BigNumberish
   ];
   export type OutputTuple = [
+    flipContract: string,
     buyer: string,
     quantity: bigint,
     totalPrice: bigint
   ];
   export interface OutputObject {
+    flipContract: string;
     buyer: string;
     quantity: bigint;
     totalPrice: bigint;
@@ -128,16 +177,19 @@ export namespace BulkMintExecutedEvent {
 
 export namespace BulkQuickBuyExecutedEvent {
   export type InputTuple = [
+    flipContract: AddressLike,
     buyer: AddressLike,
     quantity: BigNumberish,
     totalPrice: BigNumberish
   ];
   export type OutputTuple = [
+    flipContract: string,
     buyer: string,
     quantity: bigint,
     totalPrice: bigint
   ];
   export interface OutputObject {
+    flipContract: string;
     buyer: string;
     quantity: bigint;
     totalPrice: bigint;
@@ -150,16 +202,19 @@ export namespace BulkQuickBuyExecutedEvent {
 
 export namespace BulkSellExecutedEvent {
   export type InputTuple = [
+    flipContract: AddressLike,
     seller: AddressLike,
     tokenIds: BigNumberish[],
     totalPrice: BigNumberish
   ];
   export type OutputTuple = [
+    flipContract: string,
     seller: string,
     tokenIds: bigint[],
     totalPrice: bigint
   ];
   export interface OutputObject {
+    flipContract: string;
     seller: string;
     tokenIds: bigint[];
     totalPrice: bigint;
@@ -170,15 +225,72 @@ export namespace BulkSellExecutedEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace MintedEvent {
+  export type InputTuple = [
+    flipContract: AddressLike,
+    to: AddressLike,
+    tokenId: BigNumberish,
+    price: BigNumberish
+  ];
+  export type OutputTuple = [
+    flipContract: string,
+    to: string,
+    tokenId: bigint,
+    price: bigint
+  ];
+  export interface OutputObject {
+    flipContract: string;
+    to: string;
+    tokenId: bigint;
+    price: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace QuickBuyExecutedEvent {
   export type InputTuple = [
+    flipContract: AddressLike,
     buyer: AddressLike,
     tokenId: BigNumberish,
     price: BigNumberish
   ];
-  export type OutputTuple = [buyer: string, tokenId: bigint, price: bigint];
+  export type OutputTuple = [
+    flipContract: string,
+    buyer: string,
+    tokenId: bigint,
+    price: bigint
+  ];
   export interface OutputObject {
+    flipContract: string;
     buyer: string;
+    tokenId: bigint;
+    price: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace SoldEvent {
+  export type InputTuple = [
+    flipContract: AddressLike,
+    seller: AddressLike,
+    tokenId: BigNumberish,
+    price: BigNumberish
+  ];
+  export type OutputTuple = [
+    flipContract: string,
+    seller: string,
+    tokenId: bigint,
+    price: bigint
+  ];
+  export interface OutputObject {
+    flipContract: string;
+    seller: string;
     tokenId: bigint;
     price: bigint;
   }
@@ -255,6 +367,18 @@ export interface FlipPeriphery extends BaseContract {
     "nonpayable"
   >;
 
+  buy: TypedContractMethod<
+    [_flipContractAddress: AddressLike, tokenId: BigNumberish],
+    [void],
+    "payable"
+  >;
+
+  mint: TypedContractMethod<
+    [_flipContractAddress: AddressLike],
+    [void],
+    "payable"
+  >;
+
   onERC721Received: TypedContractMethod<
     [arg0: AddressLike, arg1: AddressLike, arg2: BigNumberish, arg3: BytesLike],
     [string],
@@ -265,6 +389,12 @@ export interface FlipPeriphery extends BaseContract {
     [_flipContractAddress: AddressLike],
     [void],
     "payable"
+  >;
+
+  sell: TypedContractMethod<
+    [_flipContractAddress: AddressLike, tokenId: BigNumberish],
+    [void],
+    "nonpayable"
   >;
 
   getFunction<T extends ContractMethod = ContractMethod>(
@@ -300,6 +430,20 @@ export interface FlipPeriphery extends BaseContract {
     "nonpayable"
   >;
   getFunction(
+    nameOrSignature: "buy"
+  ): TypedContractMethod<
+    [_flipContractAddress: AddressLike, tokenId: BigNumberish],
+    [void],
+    "payable"
+  >;
+  getFunction(
+    nameOrSignature: "mint"
+  ): TypedContractMethod<
+    [_flipContractAddress: AddressLike],
+    [void],
+    "payable"
+  >;
+  getFunction(
     nameOrSignature: "onERC721Received"
   ): TypedContractMethod<
     [arg0: AddressLike, arg1: AddressLike, arg2: BigNumberish, arg3: BytesLike],
@@ -313,7 +457,21 @@ export interface FlipPeriphery extends BaseContract {
     [void],
     "payable"
   >;
+  getFunction(
+    nameOrSignature: "sell"
+  ): TypedContractMethod<
+    [_flipContractAddress: AddressLike, tokenId: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
+  getEvent(
+    key: "Bought"
+  ): TypedContractEvent<
+    BoughtEvent.InputTuple,
+    BoughtEvent.OutputTuple,
+    BoughtEvent.OutputObject
+  >;
   getEvent(
     key: "BulkBuyExecuted"
   ): TypedContractEvent<
@@ -343,15 +501,40 @@ export interface FlipPeriphery extends BaseContract {
     BulkSellExecutedEvent.OutputObject
   >;
   getEvent(
+    key: "Minted"
+  ): TypedContractEvent<
+    MintedEvent.InputTuple,
+    MintedEvent.OutputTuple,
+    MintedEvent.OutputObject
+  >;
+  getEvent(
     key: "QuickBuyExecuted"
   ): TypedContractEvent<
     QuickBuyExecutedEvent.InputTuple,
     QuickBuyExecutedEvent.OutputTuple,
     QuickBuyExecutedEvent.OutputObject
   >;
+  getEvent(
+    key: "Sold"
+  ): TypedContractEvent<
+    SoldEvent.InputTuple,
+    SoldEvent.OutputTuple,
+    SoldEvent.OutputObject
+  >;
 
   filters: {
-    "BulkBuyExecuted(address,uint256[],uint256)": TypedContractEvent<
+    "Bought(address,address,uint256,uint256)": TypedContractEvent<
+      BoughtEvent.InputTuple,
+      BoughtEvent.OutputTuple,
+      BoughtEvent.OutputObject
+    >;
+    Bought: TypedContractEvent<
+      BoughtEvent.InputTuple,
+      BoughtEvent.OutputTuple,
+      BoughtEvent.OutputObject
+    >;
+
+    "BulkBuyExecuted(address,address,uint256[],uint256)": TypedContractEvent<
       BulkBuyExecutedEvent.InputTuple,
       BulkBuyExecutedEvent.OutputTuple,
       BulkBuyExecutedEvent.OutputObject
@@ -362,7 +545,7 @@ export interface FlipPeriphery extends BaseContract {
       BulkBuyExecutedEvent.OutputObject
     >;
 
-    "BulkMintExecuted(address,uint256,uint256)": TypedContractEvent<
+    "BulkMintExecuted(address,address,uint256,uint256)": TypedContractEvent<
       BulkMintExecutedEvent.InputTuple,
       BulkMintExecutedEvent.OutputTuple,
       BulkMintExecutedEvent.OutputObject
@@ -373,7 +556,7 @@ export interface FlipPeriphery extends BaseContract {
       BulkMintExecutedEvent.OutputObject
     >;
 
-    "BulkQuickBuyExecuted(address,uint256,uint256)": TypedContractEvent<
+    "BulkQuickBuyExecuted(address,address,uint256,uint256)": TypedContractEvent<
       BulkQuickBuyExecutedEvent.InputTuple,
       BulkQuickBuyExecutedEvent.OutputTuple,
       BulkQuickBuyExecutedEvent.OutputObject
@@ -384,7 +567,7 @@ export interface FlipPeriphery extends BaseContract {
       BulkQuickBuyExecutedEvent.OutputObject
     >;
 
-    "BulkSellExecuted(address,uint256[],uint256)": TypedContractEvent<
+    "BulkSellExecuted(address,address,uint256[],uint256)": TypedContractEvent<
       BulkSellExecutedEvent.InputTuple,
       BulkSellExecutedEvent.OutputTuple,
       BulkSellExecutedEvent.OutputObject
@@ -395,7 +578,18 @@ export interface FlipPeriphery extends BaseContract {
       BulkSellExecutedEvent.OutputObject
     >;
 
-    "QuickBuyExecuted(address,uint256,uint256)": TypedContractEvent<
+    "Minted(address,address,uint256,uint256)": TypedContractEvent<
+      MintedEvent.InputTuple,
+      MintedEvent.OutputTuple,
+      MintedEvent.OutputObject
+    >;
+    Minted: TypedContractEvent<
+      MintedEvent.InputTuple,
+      MintedEvent.OutputTuple,
+      MintedEvent.OutputObject
+    >;
+
+    "QuickBuyExecuted(address,address,uint256,uint256)": TypedContractEvent<
       QuickBuyExecutedEvent.InputTuple,
       QuickBuyExecutedEvent.OutputTuple,
       QuickBuyExecutedEvent.OutputObject
@@ -404,6 +598,17 @@ export interface FlipPeriphery extends BaseContract {
       QuickBuyExecutedEvent.InputTuple,
       QuickBuyExecutedEvent.OutputTuple,
       QuickBuyExecutedEvent.OutputObject
+    >;
+
+    "Sold(address,address,uint256,uint256)": TypedContractEvent<
+      SoldEvent.InputTuple,
+      SoldEvent.OutputTuple,
+      SoldEvent.OutputObject
+    >;
+    Sold: TypedContractEvent<
+      SoldEvent.InputTuple,
+      SoldEvent.OutputTuple,
+      SoldEvent.OutputObject
     >;
   };
 }

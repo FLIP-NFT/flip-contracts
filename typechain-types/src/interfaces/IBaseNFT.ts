@@ -23,52 +23,28 @@ import type {
   TypedContractMethod,
 } from "../../common";
 
-export interface BaseNFTInterface extends Interface {
+export interface IBaseNFTInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "approve"
-      | "availableTokens"
       | "balanceOf"
-      | "baseURI"
       | "contractURI"
-      | "creator"
-      | "creatorFeePercent"
-      | "currentSupply"
       | "getAllAvailableTokens"
       | "getApproved"
       | "getAvailableTokenByIndex"
       | "getAvailableTokensCount"
       | "getAvailableTokensPaginated"
-      | "initialPrice"
       | "isApprovedForAll"
-      | "maxSupply"
-      | "name"
-      | "onERC721Received"
-      | "owner"
       | "ownerOf"
-      | "renounceOwnership"
       | "safeTransferFrom(address,address,uint256)"
       | "safeTransferFrom(address,address,uint256,bytes)"
       | "setApprovalForAll"
-      | "setBaseURI"
-      | "setCreator"
       | "supportsInterface"
-      | "symbol"
-      | "tokenByIndex"
-      | "tokenIndex"
-      | "tokenOfOwnerByIndex"
-      | "tokenURI"
-      | "totalSupply"
       | "transferFrom"
-      | "transferOwnership"
   ): FunctionFragment;
 
   getEvent(
-    nameOrSignatureOrTopic:
-      | "Approval"
-      | "ApprovalForAll"
-      | "OwnershipTransferred"
-      | "Transfer"
+    nameOrSignatureOrTopic: "Approval" | "ApprovalForAll" | "Transfer"
   ): EventFragment;
 
   encodeFunctionData(
@@ -76,25 +52,11 @@ export interface BaseNFTInterface extends Interface {
     values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "availableTokens",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "balanceOf",
     values: [AddressLike]
   ): string;
-  encodeFunctionData(functionFragment: "baseURI", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "contractURI",
-    values?: undefined
-  ): string;
-  encodeFunctionData(functionFragment: "creator", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "creatorFeePercent",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "currentSupply",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -118,27 +80,12 @@ export interface BaseNFTInterface extends Interface {
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "initialPrice",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [AddressLike, AddressLike]
   ): string;
-  encodeFunctionData(functionFragment: "maxSupply", values?: undefined): string;
-  encodeFunctionData(functionFragment: "name", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "onERC721Received",
-    values: [AddressLike, AddressLike, BigNumberish, BytesLike]
-  ): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "ownerOf",
     values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "renounceOwnership",
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "safeTransferFrom(address,address,uint256)",
@@ -152,63 +99,19 @@ export interface BaseNFTInterface extends Interface {
     functionFragment: "setApprovalForAll",
     values: [AddressLike, boolean]
   ): string;
-  encodeFunctionData(functionFragment: "setBaseURI", values: [string]): string;
-  encodeFunctionData(
-    functionFragment: "setCreator",
-    values: [AddressLike]
-  ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
-  ): string;
-  encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "tokenByIndex",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "tokenIndex",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "tokenOfOwnerByIndex",
-    values: [AddressLike, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "tokenURI",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "totalSupply",
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "transferFrom",
     values: [AddressLike, AddressLike, BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "transferOwnership",
-    values: [AddressLike]
-  ): string;
 
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "availableTokens",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "baseURI", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "contractURI",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "creator", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "creatorFeePercent",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "currentSupply",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -232,25 +135,10 @@ export interface BaseNFTInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "initialPrice",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "maxSupply", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "onERC721Received",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "renounceOwnership",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "safeTransferFrom(address,address,uint256)",
     data: BytesLike
@@ -263,33 +151,12 @@ export interface BaseNFTInterface extends Interface {
     functionFragment: "setApprovalForAll",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "setBaseURI", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setCreator", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "tokenByIndex",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "tokenIndex", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "tokenOfOwnerByIndex",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "tokenURI", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "totalSupply",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "transferFrom",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
 }
@@ -334,19 +201,6 @@ export namespace ApprovalForAllEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace OwnershipTransferredEvent {
-  export type InputTuple = [previousOwner: AddressLike, newOwner: AddressLike];
-  export type OutputTuple = [previousOwner: string, newOwner: string];
-  export interface OutputObject {
-    previousOwner: string;
-    newOwner: string;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
 export namespace TransferEvent {
   export type InputTuple = [
     from: AddressLike,
@@ -365,11 +219,11 @@ export namespace TransferEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export interface BaseNFT extends BaseContract {
-  connect(runner?: ContractRunner | null): BaseNFT;
+export interface IBaseNFT extends BaseContract {
+  connect(runner?: ContractRunner | null): IBaseNFT;
   waitForDeployment(): Promise<this>;
 
-  interface: BaseNFTInterface;
+  interface: IBaseNFTInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
@@ -414,19 +268,9 @@ export interface BaseNFT extends BaseContract {
     "nonpayable"
   >;
 
-  availableTokens: TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
-
   balanceOf: TypedContractMethod<[owner: AddressLike], [bigint], "view">;
 
-  baseURI: TypedContractMethod<[], [string], "view">;
-
   contractURI: TypedContractMethod<[], [string], "view">;
-
-  creator: TypedContractMethod<[], [string], "view">;
-
-  creatorFeePercent: TypedContractMethod<[], [bigint], "view">;
-
-  currentSupply: TypedContractMethod<[], [bigint], "view">;
 
   getAllAvailableTokens: TypedContractMethod<[], [bigint[]], "view">;
 
@@ -446,29 +290,13 @@ export interface BaseNFT extends BaseContract {
     "view"
   >;
 
-  initialPrice: TypedContractMethod<[], [bigint], "view">;
-
   isApprovedForAll: TypedContractMethod<
     [owner: AddressLike, operator: AddressLike],
     [boolean],
     "view"
   >;
 
-  maxSupply: TypedContractMethod<[], [bigint], "view">;
-
-  name: TypedContractMethod<[], [string], "view">;
-
-  onERC721Received: TypedContractMethod<
-    [arg0: AddressLike, arg1: AddressLike, arg2: BigNumberish, arg3: BytesLike],
-    [string],
-    "nonpayable"
-  >;
-
-  owner: TypedContractMethod<[], [string], "view">;
-
   ownerOf: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
-
-  renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
 
   "safeTransferFrom(address,address,uint256)": TypedContractMethod<
     [from: AddressLike, to: AddressLike, tokenId: BigNumberish],
@@ -493,44 +321,14 @@ export interface BaseNFT extends BaseContract {
     "nonpayable"
   >;
 
-  setBaseURI: TypedContractMethod<[_baseURI: string], [void], "nonpayable">;
-
-  setCreator: TypedContractMethod<
-    [_creator: AddressLike],
-    [void],
-    "nonpayable"
-  >;
-
   supportsInterface: TypedContractMethod<
     [interfaceId: BytesLike],
     [boolean],
     "view"
   >;
 
-  symbol: TypedContractMethod<[], [string], "view">;
-
-  tokenByIndex: TypedContractMethod<[index: BigNumberish], [bigint], "view">;
-
-  tokenIndex: TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
-
-  tokenOfOwnerByIndex: TypedContractMethod<
-    [owner: AddressLike, index: BigNumberish],
-    [bigint],
-    "view"
-  >;
-
-  tokenURI: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
-
-  totalSupply: TypedContractMethod<[], [bigint], "view">;
-
   transferFrom: TypedContractMethod<
     [from: AddressLike, to: AddressLike, tokenId: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
-
-  transferOwnership: TypedContractMethod<
-    [newOwner: AddressLike],
     [void],
     "nonpayable"
   >;
@@ -547,26 +345,11 @@ export interface BaseNFT extends BaseContract {
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "availableTokens"
-  ): TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
-  getFunction(
     nameOrSignature: "balanceOf"
   ): TypedContractMethod<[owner: AddressLike], [bigint], "view">;
   getFunction(
-    nameOrSignature: "baseURI"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
     nameOrSignature: "contractURI"
   ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "creator"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "creatorFeePercent"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "currentSupply"
-  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "getAllAvailableTokens"
   ): TypedContractMethod<[], [bigint[]], "view">;
@@ -587,9 +370,6 @@ export interface BaseNFT extends BaseContract {
     "view"
   >;
   getFunction(
-    nameOrSignature: "initialPrice"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
     nameOrSignature: "isApprovedForAll"
   ): TypedContractMethod<
     [owner: AddressLike, operator: AddressLike],
@@ -597,27 +377,8 @@ export interface BaseNFT extends BaseContract {
     "view"
   >;
   getFunction(
-    nameOrSignature: "maxSupply"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "name"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "onERC721Received"
-  ): TypedContractMethod<
-    [arg0: AddressLike, arg1: AddressLike, arg2: BigNumberish, arg3: BytesLike],
-    [string],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "owner"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
     nameOrSignature: "ownerOf"
   ): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
-  getFunction(
-    nameOrSignature: "renounceOwnership"
-  ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "safeTransferFrom(address,address,uint256)"
   ): TypedContractMethod<
@@ -645,36 +406,8 @@ export interface BaseNFT extends BaseContract {
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "setBaseURI"
-  ): TypedContractMethod<[_baseURI: string], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "setCreator"
-  ): TypedContractMethod<[_creator: AddressLike], [void], "nonpayable">;
-  getFunction(
     nameOrSignature: "supportsInterface"
   ): TypedContractMethod<[interfaceId: BytesLike], [boolean], "view">;
-  getFunction(
-    nameOrSignature: "symbol"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "tokenByIndex"
-  ): TypedContractMethod<[index: BigNumberish], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "tokenIndex"
-  ): TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "tokenOfOwnerByIndex"
-  ): TypedContractMethod<
-    [owner: AddressLike, index: BigNumberish],
-    [bigint],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "tokenURI"
-  ): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
-  getFunction(
-    nameOrSignature: "totalSupply"
-  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "transferFrom"
   ): TypedContractMethod<
@@ -682,9 +415,6 @@ export interface BaseNFT extends BaseContract {
     [void],
     "nonpayable"
   >;
-  getFunction(
-    nameOrSignature: "transferOwnership"
-  ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
 
   getEvent(
     key: "Approval"
@@ -699,13 +429,6 @@ export interface BaseNFT extends BaseContract {
     ApprovalForAllEvent.InputTuple,
     ApprovalForAllEvent.OutputTuple,
     ApprovalForAllEvent.OutputObject
-  >;
-  getEvent(
-    key: "OwnershipTransferred"
-  ): TypedContractEvent<
-    OwnershipTransferredEvent.InputTuple,
-    OwnershipTransferredEvent.OutputTuple,
-    OwnershipTransferredEvent.OutputObject
   >;
   getEvent(
     key: "Transfer"
@@ -736,17 +459,6 @@ export interface BaseNFT extends BaseContract {
       ApprovalForAllEvent.InputTuple,
       ApprovalForAllEvent.OutputTuple,
       ApprovalForAllEvent.OutputObject
-    >;
-
-    "OwnershipTransferred(address,address)": TypedContractEvent<
-      OwnershipTransferredEvent.InputTuple,
-      OwnershipTransferredEvent.OutputTuple,
-      OwnershipTransferredEvent.OutputObject
-    >;
-    OwnershipTransferred: TypedContractEvent<
-      OwnershipTransferredEvent.InputTuple,
-      OwnershipTransferredEvent.OutputTuple,
-      OwnershipTransferredEvent.OutputObject
     >;
 
     "Transfer(address,address,uint256)": TypedContractEvent<

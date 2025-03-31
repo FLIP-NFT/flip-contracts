@@ -3,19 +3,22 @@ pragma solidity ^0.8.13;
 
 import {Test, console} from "forge-std/Test.sol";
 import {FlipNFT} from "../../src/examples/FlipNFT.sol";
-
+import {FeeVault} from "../../src/core/FeeVault.sol";
 contract FlipTest is Test {
     receive() external payable {}
 
     FlipNFT public flip;
+    FeeVault public feeVault;
 
     address alice = address(0x1);
     address bob = address(0x2);
     address carol = address(0x3);
 
     function setUp() public {
+        feeVault = new FeeVault();
         vm.prank(alice);
         flip = new FlipNFT(
+            address(feeVault),
             "Flip",
             "FLIP",
             0.001 ether,
@@ -81,6 +84,7 @@ contract FlipTest is Test {
         uint256 bobBalanceBeforeSell = bob.balance;
         uint256 contractBalanceBeforeSell = address(flip).balance;
         uint256 creatorBalanceBeforeSell = address(alice).balance;
+        uint256 protocolBalanceBeforeSell = address(feeVault).balance;
         for (uint256 i = 1; i <= 10000; i++) {
             vm.prank(bob);
             flip.sell(i);
@@ -88,7 +92,7 @@ contract FlipTest is Test {
         uint256 bobBalanceAfterSell = bob.balance;
         uint256 contractBalanceAfterSell = address(flip).balance;
         uint256 creatorBalanceAfterSell = address(alice).balance;
-
+        uint256 protocolBalanceAfterSell = address(feeVault).balance;
         /*
         console.log("Bob Balance before sell      ", bobBalanceBeforeSell);
         console.log("Bob Balance after sell       ", bobBalanceAfterSell);
@@ -103,8 +107,8 @@ contract FlipTest is Test {
         uint256 diffContractBalance = contractBalanceBeforeSell - contractBalanceAfterSell;
         uint256 diffBobBalance = bobBalanceAfterSell - bobBalanceBeforeSell;
         uint256 diffCreatorBalance = creatorBalanceAfterSell - creatorBalanceBeforeSell;
-        
-        assertEq(diffContractBalance, diffBobBalance + diffCreatorBalance);
+        uint256 diffProtocolBalance = protocolBalanceAfterSell - protocolBalanceBeforeSell;
+        assertEq(diffContractBalance, diffBobBalance + diffCreatorBalance + diffProtocolBalance);
 
         uint256 tokensCount = flip.getAvailableTokensCount();
         console.log("available tokens count", tokensCount);
@@ -177,10 +181,14 @@ contract FlipTest is Test {
         // sell 1000
         // console.log("================================================");
         uint256 creatorBalanceBeforeSell = address(alice).balance;
+        uint256 protocolBalanceBeforeSell = address(feeVault).balance;
         uint256 bobBalanceBeforeSell = bob.balance;
         uint256 contractBalanceBeforeSell = address(flip).balance;
+        
         uint256 totalSellPriceAfterFee = 0;
         uint256 totalSellPrice = 0;
+        uint256 totalSellFee = 0;
+        uint256 totalProtocolFee = 0;
         uint256 totalCreatorSellFee = 0;
         for (uint256 i = 1; i <= 2000; i++) {
             uint256 sellPrice = flip.getSellPrice();
@@ -191,8 +199,12 @@ contract FlipTest is Test {
             
             totalSellPriceAfterFee += sellPriceAfterFee;
             totalSellPrice += sellPrice;
-            totalCreatorSellFee += sellPrice * flip.creatorFeePercent() / 1 ether;
-            
+            uint256 sellFee = sellPrice * flip.creatorFeePercent() / 1 ether;
+            totalSellFee += sellFee;
+            uint256 protocolFee = sellFee * feeVault.PROTOCOL_FEE_PERCENT() / 1 ether;
+            uint256 creatorSellFee = sellFee - protocolFee;
+            totalProtocolFee += protocolFee;
+            totalCreatorSellFee += creatorSellFee;
             if (i % 500 == 0 || i == 1 || i == 2000) {
                 /*
                 console.log("Token ID:            ", i);
@@ -207,6 +219,7 @@ contract FlipTest is Test {
         uint256 contractBalanceAfterSell = address(flip).balance;
         uint256 bobBalanceAfterSell = bob.balance;
         uint256 creatorBalanceAfterSell = address(alice).balance;
+        uint256 protocolBalanceAfterSell = address(feeVault).balance;
 
         /*
         console.log("Bob Balance before sell      ", bobBalanceBeforeSell);
@@ -222,8 +235,9 @@ contract FlipTest is Test {
         
         assertEq(bobBalanceAfterSell, bobBalanceBeforeSell + totalSellPriceAfterFee);
         assertEq(creatorBalanceAfterSell, creatorBalanceBeforeSell + totalCreatorSellFee);
+        assertEq(protocolBalanceAfterSell, protocolBalanceBeforeSell + totalProtocolFee);
         assertEq(contractBalanceAfterSell, contractBalanceBeforeSell - totalSellPrice);
-        assertEq(totalSellPrice, totalSellPriceAfterFee + totalCreatorSellFee);
+        assertEq(totalSellPrice, totalSellPriceAfterFee + totalCreatorSellFee + totalProtocolFee);
 
         // buy 200
         // console.log("================================================");
@@ -231,9 +245,12 @@ contract FlipTest is Test {
         uint256 carolBalanceBeforeBuy = carol.balance;
         uint256 contractBalanceBeforeBuy = address(flip).balance;
         uint256 creatorBalanceBeforeBuy = address(alice).balance;
+        uint256 protocolBalanceBeforeBuy = address(feeVault).balance;
 
         uint256 totalBuyPriceAfterFee = 0;
         uint256 totalBuyPrice = 0;
+        uint256 totalBuyFee = 0;
+        totalProtocolFee = 0;
         uint256 totalCreatorBuyFee = 0;
         for (uint256 i = 1; i <= 2000; i++) {
             uint256 buyPrice = flip.getBuyPrice();
@@ -244,7 +261,12 @@ contract FlipTest is Test {
 
             totalBuyPriceAfterFee += buyPriceAfterFee;
             totalBuyPrice += buyPrice;
-            totalCreatorBuyFee += buyPrice * flip.creatorFeePercent() / 1 ether;
+            uint256 buyFee = buyPrice * flip.creatorFeePercent() / 1 ether;
+            totalBuyFee += buyFee;
+            uint256 protocolFee = buyFee * feeVault.PROTOCOL_FEE_PERCENT() / 1 ether;
+            uint256 creatorBuyFee = buyFee - protocolFee;
+            totalProtocolFee += protocolFee;
+            totalCreatorBuyFee += creatorBuyFee;
             
             if (i % 500 == 0 || i == 1 || i == 2000) {
                 /*
@@ -261,6 +283,7 @@ contract FlipTest is Test {
         uint256 contractBalanceAfterBuy = address(flip).balance;
         uint256 carolBalanceAfterBuy = carol.balance;
         uint256 creatorBalanceAfterBuy = address(alice).balance;
+        uint256 protocolBalanceAfterBuy = address(feeVault).balance;
 
         /*
         console.log("Carol Balance before buy   ", carolBalanceBeforeBuy);
@@ -276,8 +299,9 @@ contract FlipTest is Test {
 
         assertEq(carolBalanceAfterBuy, carolBalanceBeforeBuy - totalBuyPriceAfterFee);
         assertEq(creatorBalanceAfterBuy, creatorBalanceBeforeBuy + totalCreatorBuyFee);
+        assertEq(protocolBalanceAfterBuy, protocolBalanceBeforeBuy + totalProtocolFee);
         assertEq(contractBalanceAfterBuy, contractBalanceBeforeBuy + totalBuyPrice);
-        assertEq(totalBuyPrice, totalBuyPriceAfterFee - totalCreatorBuyFee);
+        assertEq(totalBuyPrice, totalBuyPriceAfterFee - totalCreatorBuyFee - totalProtocolFee);
 
         /*
         // sell 1000

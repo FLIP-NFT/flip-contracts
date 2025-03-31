@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/jjvincent/Dropbox/Work/Github/maluning/flip/flip-contracts/src/core/BaseNFT.sol": {
-      "lastModificationDate": 1739973614183,
-      "contentHash": "f1a7063d7a759985a339bb285be956ca",
+      "lastModificationDate": 1740379663694,
+      "contentHash": "c952308c6da3856f4eaaf9343bf735e4",
       "sourceName": "src/core/BaseNFT.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -42,6 +42,7 @@
         "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol",
         "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol",
         "@openzeppelin/contracts/access/Ownable.sol",
+        "@openzeppelin/contracts/utils/Strings.sol",
         "./Storage.sol"
       ],
       "versionPragmas": [
@@ -52,8 +53,8 @@
       ]
     },
     "/Users/jjvincent/Dropbox/Work/Github/maluning/flip/flip-contracts/src/core/Storage.sol": {
-      "lastModificationDate": 1739707362135,
-      "contentHash": "d247f1f8c906b449774166e44227b7c6",
+      "lastModificationDate": 1740382176867,
+      "contentHash": "c90c2761789d5edda39819e4ce36f955",
       "sourceName": "src/core/Storage.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -924,8 +925,8 @@
       ]
     },
     "/Users/jjvincent/Dropbox/Work/Github/maluning/flip/flip-contracts/src/core/Trade.sol": {
-      "lastModificationDate": 1738558667285,
-      "contentHash": "f5cf18bca84450685c49709fe33b9296",
+      "lastModificationDate": 1742799578514,
+      "contentHash": "cc233bc573d2df218ca6b5b28fe361dd",
       "sourceName": "src/core/Trade.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -961,6 +962,7 @@
       },
       "imports": [
         "./Price.sol",
+        "./FeeVault.sol",
         "../interfaces/ITrade.sol"
       ],
       "versionPragmas": [
@@ -1017,8 +1019,8 @@
       ]
     },
     "/Users/jjvincent/Dropbox/Work/Github/maluning/flip/flip-contracts/src/examples/FlipNFT.sol": {
-      "lastModificationDate": 1739633327602,
-      "contentHash": "6ba493e7ccb445ef406add3e8a574f54",
+      "lastModificationDate": 1742802233122,
+      "contentHash": "1dcf04e90ee257a795f65a44ad8da688",
       "sourceName": "src/examples/FlipNFT.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -1156,8 +1158,8 @@
       ]
     },
     "/Users/jjvincent/Dropbox/Work/Github/maluning/flip/flip-contracts/src/periphery/FlipPeriphery.sol": {
-      "lastModificationDate": 1738558668797,
-      "contentHash": "c5940f1419b1d84a9d953ede06698666",
+      "lastModificationDate": 1742900508194,
+      "contentHash": "816d1ea672ffc425a3452f0fb7c8d82c",
       "sourceName": "src/periphery/FlipPeriphery.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -1252,8 +1254,8 @@
       ]
     },
     "/Users/jjvincent/Dropbox/Work/Github/maluning/flip/flip-contracts/src/core/Factory.sol": {
-      "lastModificationDate": 1740051630506,
-      "contentHash": "378e54fc559b2ee591a88ef58022daee",
+      "lastModificationDate": 1743317284454,
+      "contentHash": "c06c3af5497dbdfcf885050fc2fd0bab",
       "sourceName": "src/core/Factory.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -1289,6 +1291,7 @@
       },
       "imports": [
         "./Registry.sol",
+        "./FeeVault.sol",
         "./Trade.sol"
       ],
       "versionPragmas": [
@@ -1296,6 +1299,97 @@
       ],
       "artifacts": [
         "Factory"
+      ]
+    },
+    "/Users/jjvincent/Dropbox/Work/Github/maluning/flip/flip-contracts/src/interfaces/IBaseNFT.sol": {
+      "lastModificationDate": 1740975897510,
+      "contentHash": "447ae6b8c1cf3a2b50dee350f6c23147",
+      "sourceName": "src/interfaces/IBaseNFT.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200,
+            "details": {
+              "yul": true,
+              "yulDetails": {
+                "stackAllocation": true,
+                "optimizerSteps": "u"
+              }
+            }
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC721/IERC721.sol",
+        "./IStorage.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "IBaseNFT"
+      ]
+    },
+    "/Users/jjvincent/Dropbox/Work/Github/maluning/flip/flip-contracts/src/core/FeeVault.sol": {
+      "lastModificationDate": 1742799086690,
+      "contentHash": "493114ad0accc04a6f1f64bc4b1a991e",
+      "sourceName": "src/core/FeeVault.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200,
+            "details": {
+              "yul": true,
+              "yulDetails": {
+                "stackAllocation": true,
+                "optimizerSteps": "u"
+              }
+            }
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "FeeVault"
       ]
     }
   }

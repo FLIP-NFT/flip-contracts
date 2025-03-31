@@ -3,6 +3,7 @@
 /* eslint-disable */
 export { BaseNFT__factory } from "./BaseNFT__factory";
 export { Factory__factory } from "./Factory__factory";
+export { FeeVault__factory } from "./FeeVault__factory";
 export { Price__factory } from "./Price__factory";
 export { Registry__factory } from "./Registry__factory";
 export { Storage__factory } from "./Storage__factory";

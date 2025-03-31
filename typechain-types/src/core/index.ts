@@ -3,6 +3,7 @@
 /* eslint-disable */
 export type { BaseNFT } from "./BaseNFT";
 export type { Factory } from "./Factory";
+export type { FeeVault } from "./FeeVault";
 export type { Price } from "./Price";
 export type { Registry } from "./Registry";
 export type { Storage } from "./Storage";
